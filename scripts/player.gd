@@ -6,6 +6,11 @@ extends RigidBody2D
 @onready var input: PlayerInput = $PlayerInput
 @onready var ground_check: RayCast2D = $GroundCheck
 @onready var player_health: PlayerHealth = $PlayerHealth
+@onready var shooter: Shooter = $Shooter
+
+
+var knockback_time = 0.0
+
 
 @export var player_id := 1:
 	set(id):
@@ -19,10 +24,13 @@ extends RigidBody2D
 
 
 func _ready() -> void:
-	linear_damp = 4.0  # Acts like air resistance/friction
-	lock_rotation = true  # Prevent player from rotating/falling over
+	linear_damp = 3.0  # Acts like air resistance/friction
 	player_health.died.connect(_on_died)	
-
+	shooter.shot.connect(apply_knockback)
+	lock_rotation = true
+	
+func _process(delta: float) -> void:
+	knockback_time = max(knockback_time - delta, 0)
 
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
@@ -30,17 +38,26 @@ func _physics_process(delta: float) -> void:
 	
 	var on_floor = ground_check.is_colliding()
 	
+	if knockback_time > 0:
+		return  # Skip normal movement force
+		
+	# Jump - use impulse (instant velocity change is fine here)
 	if input.consume_jump() and on_floor:
-		linear_velocity.y = player_stat.jump_velocity  # Or use impulse
+		apply_central_impulse(Vector2(0, player_stat.jump_force))
 	
+	# Movement - apply forces
 	var dir = input.direction
 	if dir != Vector2.ZERO:
-		linear_velocity.x = dir.x * player_stat.movement_velocity  # Direct control
-	else:
-		linear_velocity.x = lerp(linear_velocity.x, 0.0, 0.2)  # Quick stop
-
+		var movement_multiplier = 1.0 if on_floor else player_stat.air_movement_coefficient
+		var target_velocity = dir.x * player_stat.max_velocity
+		var velocity_diff = target_velocity - linear_velocity.x
+		apply_central_force(Vector2(velocity_diff * player_stat.movement_force * movement_multiplier, 0))
+	#elif on_floor:
+		## Apply stopping force when no input
+		#apply_central_force(Vector2(-linear_velocity.x * player_stat.movement_force, 0))
 
 func _on_died():
+	print(Lobby.player_info["name"], " DIED")
 	if  multiplayer.is_server():
 		remove_player.rpc()
 	if input.is_multiplayer_authority():
@@ -52,3 +69,6 @@ func remove_player():
 	set_physics_process(false)
 	hide()
 	
+func apply_knockback(force: Vector2):
+	knockback_time = shooter.shooter_stat.knockback_duration
+	apply_central_impulse(force)

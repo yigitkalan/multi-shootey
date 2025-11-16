@@ -1,5 +1,9 @@
+class_name Shooter
 extends Node2D
 
+signal shot(dir: Vector2)
+
+@export var shooter_stat: ShooterStat
 @onready var player_input: PlayerInput = $"../PlayerInput"
 @onready var bullet_spawner: MultiplayerSpawner = $"../BulletSpawner"
 const BULLET_SCENE = preload("uid://ssa5260nc2ff")
@@ -13,7 +17,10 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if player_input.consume_shoot():
-		_spawn_bullet(_calculate_bullet_dir(player_input.get_click_pos()))
+		var bullet_dir = _calculate_bullet_dir(player_input.get_click_pos())
+		_spawn_bullet(bullet_dir)
+		shot.emit(get_knockback_force(bullet_dir))
+		
 	look_at(player_input.get_click_pos())
 	
 
@@ -32,4 +39,8 @@ func _calculate_bullet_dir(click_pos: Vector2) -> Vector2:
 	
 func _calculate_spawn_position() -> Vector2:
 	return global_position + next_bullet_direction * 5000
+	
+func get_knockback_force(dir: Vector2) -> Vector2:
+	return -dir * shooter_stat.knockback_force
+	
 	
