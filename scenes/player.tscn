@@ -1,20 +1,30 @@
-[gd_scene load_steps=14 format=3 uid="uid://b2xyd22qyvitu"]
+[gd_scene load_steps=16 format=3 uid="uid://b2xyd22qyvitu"]
 
 [ext_resource type="Script" uid="uid://dt3nhsns6lfti" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://drq2bphy4y2ku" path="res://scripts/player_input.gd" id="2_g2els"]
 [ext_resource type="Script" uid="uid://wjqvn3mjonok" path="res://scripts/player_shooter.gd" id="2_qhqgy"]
 [ext_resource type="Script" uid="uid://duqnljlxs85" path="res://resources/player_stat.gd" id="2_tuyoq"]
 [ext_resource type="Script" uid="uid://cbwxn08wwgip3" path="res://scripts/player_health.gd" id="4_dqkch"]
+[ext_resource type="Script" uid="uid://c5dl4767j7a2a" path="res://resources/shooter_stat.gd" id="4_fjrip"]
 [ext_resource type="Script" uid="uid://ds1v72aqd1ena" path="res://resources/health_stat.gd" id="5_qlg0r"]
 
 [sub_resource type="Resource" id="Resource_fjrip"]
 script = ExtResource("2_tuyoq")
-movement_velocity = 400
-jump_velocity = 600
+movement_force = 30
+stop_force = 60
+max_velocity = 300
+air_movement_coefficient = 0.1
+jump_force = 300
 metadata/_custom_type_script = "uid://duqnljlxs85"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qhqgy"]
-size = Vector2(20, 18)
+size = Vector2(16, 16)
+
+[sub_resource type="Resource" id="Resource_smehm"]
+script = ExtResource("4_fjrip")
+knockback_force = 500
+knockback_duration = 0.4
+metadata/_custom_type_script = "uid://c5dl4767j7a2a"
 
 [sub_resource type="Gradient" id="Gradient_rd3vj"]
 offsets = PackedFloat32Array(1)
@@ -47,12 +57,13 @@ properties/4/replication_mode = 2
 
 [sub_resource type="Resource" id="Resource_tuyoq"]
 script = ExtResource("5_qlg0r")
-max_health = 2
+max_health = 4
 metadata/_custom_type_script = "uid://ds1v72aqd1ena"
 
-[node name="Body" type="RigidBody2D"]
+[node name="Player" type="RigidBody2D"]
 collision_layer = 2
-collision_mask = 5
+collision_mask = 29
+mass = 0.5
 script = ExtResource("1_3vyb7")
 player_stat = SubResource("Resource_fjrip")
 
@@ -67,6 +78,7 @@ spawn_path = NodePath(".")
 rotation = 0.011181319
 scale = Vector2(0.99999994, 0.99999994)
 script = ExtResource("2_qhqgy")
+shooter_stat = SubResource("Resource_smehm")
 
 [node name="ShootingPoint" type="Marker2D" parent="Shooter"]
 position = Vector2(29.998123, -0.3354326)

@@ -1,6 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://d0wig0rls33eu"]
+[gd_scene load_steps=6 format=3 uid="uid://d0wig0rls33eu"]
 
 [ext_resource type="Script" uid="uid://chfvtjwfm4n2k" path="res://scripts/game.gd" id="1_uwrxv"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uwrxv"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2q6dc"]
 
@@ -16,6 +18,7 @@ script = ExtResource("1_uwrxv")
 
 [node name="Floor" type="StaticBody2D" parent="."]
 collision_layer = 4
+physics_material_override = SubResource("PhysicsMaterial_uwrxv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
 position = Vector2(-2, 307)
@@ -31,11 +34,11 @@ position = Vector2(1, -1)
 
 [node name="SpawnPoints" type="Node" parent="."]
 
-[node name="Node2D" type="Node2D" parent="SpawnPoints"]
-position = Vector2(-479, 266)
+[node name="Marker2D" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(-482, 281)
 
-[node name="Node2D2" type="Node2D" parent="SpawnPoints"]
-position = Vector2(469, 265)
+[node name="Marker2D2" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(472, 281)
 
 [node name="Players" type="Node" parent="."]
 
