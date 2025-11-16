@@ -1,33 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://d0wig0rls33eu"]
+[gd_scene load_steps=5 format=3 uid="uid://d0wig0rls33eu"]
 
 [ext_resource type="Script" uid="uid://chfvtjwfm4n2k" path="res://scripts/game.gd" id="1_uwrxv"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uwrxv"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uwrxv"]
+size = Vector2(160, 18)
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2q6dc"]
-
-[sub_resource type="Gradient" id="Gradient_2q6dc"]
+[sub_resource type="Gradient" id="Gradient_yqjtg"]
 offsets = PackedFloat32Array(1)
 colors = PackedColorArray(1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_w7c3h"]
-gradient = SubResource("Gradient_2q6dc")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lnu2h"]
+gradient = SubResource("Gradient_yqjtg")
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_uwrxv")
-
-[node name="Floor" type="StaticBody2D" parent="."]
-collision_layer = 4
-physics_material_override = SubResource("PhysicsMaterial_uwrxv")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
-position = Vector2(-2, 307)
-shape = SubResource("WorldBoundaryShape2D_2q6dc")
-
-[node name="Sprite2D" type="Sprite2D" parent="Floor"]
-position = Vector2(-1.9999999, 311.00003)
-scale = Vector2(4.5462584, 11.112897)
-texture = SubResource("GradientTexture1D_w7c3h")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(1, -1)
@@ -45,3 +31,67 @@ position = Vector2(472, 281)
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://b2xyd22qyvitu")
 spawn_path = NodePath("../Players")
+
+[node name="Grounds" type="Node" parent="."]
+
+[node name="Island" type="StaticBody2D" parent="Grounds"]
+position = Vector2(-263, 162)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounds/Island"]
+shape = SubResource("RectangleShape2D_uwrxv")
+
+[node name="Sprite2D" type="Sprite2D" parent="Grounds/Island"]
+scale = Vector2(2.5027564, 0.27400684)
+texture = SubResource("GradientTexture2D_lnu2h")
+
+[node name="Island4" type="StaticBody2D" parent="Grounds"]
+position = Vector2(-347, 313)
+scale = Vector2(2.5827348, -0.71795565)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounds/Island4"]
+shape = SubResource("RectangleShape2D_uwrxv")
+
+[node name="Sprite2D" type="Sprite2D" parent="Grounds/Island4"]
+scale = Vector2(2.5027564, 0.27400684)
+texture = SubResource("GradientTexture2D_lnu2h")
+
+[node name="Island5" type="StaticBody2D" parent="Grounds"]
+position = Vector2(343, 313)
+scale = Vector2(2.5827348, -0.71795565)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounds/Island5"]
+shape = SubResource("RectangleShape2D_uwrxv")
+
+[node name="Sprite2D" type="Sprite2D" parent="Grounds/Island5"]
+scale = Vector2(2.5027564, 0.27400684)
+texture = SubResource("GradientTexture2D_lnu2h")
+
+[node name="Island2" type="StaticBody2D" parent="Grounds"]
+position = Vector2(263, 160)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounds/Island2"]
+shape = SubResource("RectangleShape2D_uwrxv")
+
+[node name="Sprite2D" type="Sprite2D" parent="Grounds/Island2"]
+scale = Vector2(2.5027564, 0.27400684)
+texture = SubResource("GradientTexture2D_lnu2h")
+
+[node name="Island3" type="StaticBody2D" parent="Grounds"]
+position = Vector2(0, 45)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounds/Island3"]
+shape = SubResource("RectangleShape2D_uwrxv")
+
+[node name="Sprite2D" type="Sprite2D" parent="Grounds/Island3"]
+scale = Vector2(2.5027564, 0.27400684)
+texture = SubResource("GradientTexture2D_lnu2h")

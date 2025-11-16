@@ -10,10 +10,10 @@
 
 [sub_resource type="Resource" id="Resource_fjrip"]
 script = ExtResource("2_tuyoq")
-movement_force = 30
-stop_force = 60
+movement_force = 10
+stop_force = 10
 max_velocity = 300
-air_movement_coefficient = 0.1
+air_movement_coefficient = 0.2
 jump_force = 300
 metadata/_custom_type_script = "uid://duqnljlxs85"
 
@@ -22,8 +22,8 @@ size = Vector2(16, 16)
 
 [sub_resource type="Resource" id="Resource_smehm"]
 script = ExtResource("4_fjrip")
-knockback_force = 500
-knockback_duration = 0.4
+knockback_force = 300
+knockback_duration = 0.15
 metadata/_custom_type_script = "uid://c5dl4767j7a2a"
 
 [sub_resource type="Gradient" id="Gradient_rd3vj"]
@@ -62,7 +62,7 @@ metadata/_custom_type_script = "uid://ds1v72aqd1ena"
 
 [node name="Player" type="RigidBody2D"]
 collision_layer = 2
-collision_mask = 29
+collision_mask = 13
 mass = 0.5
 script = ExtResource("1_3vyb7")
 player_stat = SubResource("Resource_fjrip")
@@ -93,13 +93,23 @@ script = ExtResource("2_g2els")
 [node name="InputSynchronizer" type="MultiplayerSynchronizer" parent="PlayerInput"]
 replication_config = SubResource("SceneReplicationConfig_qhqgy")
 
-[node name="GroundCheck" type="RayCast2D" parent="."]
-target_position = Vector2(0, 20)
-collision_mask = 4
-
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_dqkch")
 
 [node name="PlayerHealth" type="Node2D" parent="."]
 script = ExtResource("4_dqkch")
 health_stat = SubResource("Resource_tuyoq")
+
+[node name="GroundCheck" type="RayCast2D" parent="."]
+target_position = Vector2(0, 20)
+collision_mask = 4
+
+[node name="RightCheck" type="RayCast2D" parent="."]
+rotation = -1.5707964
+target_position = Vector2(0, 15)
+collision_mask = 4
+
+[node name="LeftCheck" type="RayCast2D" parent="."]
+rotation = 1.5707964
+target_position = Vector2(0, 15)
+collision_mask = 4

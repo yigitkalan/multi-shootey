@@ -8,7 +8,7 @@ script = ExtResource("2_y25gk")
 hit_damage = 2
 explosion_damage = 1
 explosion_range = 80.0
-explosion_force = 600.0
+explosion_force = 400.0
 cooldown = 1.0
 lifetime = 1.0
 velocity = 800.0
@@ -54,7 +54,7 @@ replication_config = SubResource("SceneReplicationConfig_h1aey")
 [node name="Timer" type="Timer" parent="."]
 
 [node name="ExplosionArea" type="Area2D" parent="."]
-collision_layer = 16
+collision_layer = 8
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ExplosionArea"]
