@@ -40,12 +40,15 @@ func _physics_process(delta: float) -> void:
 	
 	var on_floor = ground_check.is_colliding()
 	
-	
 	if knockback_time > 0:
 		return  # Skip normal movement force
 		
+	if not input.can_double_jump() and on_floor:
+		input.reset_jump_count()
+		
 	# Jump - use impulse (instant velocity change is fine here)
-	if input.consume_jump() and on_floor:
+	if input.consume_jump() and (on_floor or input.can_double_jump()):
+		input.increase_jump_count()
 		apply_central_impulse(Vector2(0, player_stat.jump_force))
 	
 	# Movement - apply forces

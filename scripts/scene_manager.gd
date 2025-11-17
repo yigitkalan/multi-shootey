@@ -23,6 +23,7 @@ func _ready():
 	level_spawner = get_node("/root/Multiplayer/LevelSpawner")
 	level_spawner.spawned.connect(_on_spawned)
 	Lobby.server_closed.connect(reset_current)
+	Lobby.player_joined.connect(_on_player_joined)
 
 func change_scene(scene: Scene):
 	_load_scene.call_deferred(scene)
@@ -39,6 +40,12 @@ func set_current_scene(scene: Scene):
 
 func _on_spawned(level: Node) -> void:
 	MenuManager.hide_all_menus()
+	
+	
+func _on_player_joined(peer_id: int, player_info: Dictionary):
+	if !multiplayer.is_server():
+		return
+	set_current_scene.rpc_id(peer_id, current_scene)
 	
 func reset_current():
 	current_scene = Scene.NONE
@@ -60,6 +67,7 @@ func _load_scene(scene: Scene):
 	current_scene_node = new_scene
 	
 	set_current_scene.rpc(scene)
+	
 	scene_changed.emit(scene)
 
 func is_in_game() -> bool:

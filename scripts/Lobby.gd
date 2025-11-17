@@ -7,7 +7,7 @@ signal server_closed
 
 const PORT := 7000
 const DEFAULT_SERVER_IP := "127.0.0.1"
-const MAX_CONNECTIONS := 20
+const MAX_CONNECTIONS := 4
 
 var players: Dictionary = {}  # {peer_id: player_info}
 var player_info: Dictionary = {"name": "Name"}

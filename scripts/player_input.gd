@@ -3,12 +3,15 @@ class_name PlayerInput
 extends Node2D
 
 @export var direction: Vector2 = Vector2.ZERO  # Synced continuously
+@export var max_jump: int = 2
 
 # Don't sync jumping at all - use RPC instead
 var _jump_requested: bool = false
 
 var _shoot_requested: bool = false
 var _mouse_postition: Vector2
+
+var _jump_count : int = 0
 
 @onready var sync: MultiplayerSynchronizer = $InputSynchronizer
 
@@ -64,6 +67,15 @@ func set_current_mouse_pos() -> void:
 		
 func get_click_pos() -> Vector2:
 	return _mouse_postition
+	
+func can_double_jump() -> bool:
+	return _jump_count < max_jump
+		
+func reset_jump_count():
+	_jump_count = 0
+	
+func increase_jump_count():
+	_jump_count += 1
 	
 func consume_shoot() -> bool:
 	var result = _shoot_requested
