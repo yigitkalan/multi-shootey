@@ -1,67 +1,72 @@
 extends Node
-# Autoload named SceneManager
 
-signal scene_changing(from_path: String, to_path: String)
-signal scene_changed(scene_path: String)
+signal scene_changing(from_scene: Scene, to_scene: Scene)
+signal scene_changed(scene: Scene)
 
 enum Scene {
-	GAME
+	NONE = -1,  # Explicit "no scene" state
+	GAME = 0
 }
 
 const SCENE_PATHS = {
-	# Scene.LOBBY_MENU: "res://scenes/main_menu.tscn",
 	Scene.GAME: "res://scenes/game.tscn"
 }
 
-var current_scene: Node = null
+var current_scene: Scene = Scene.NONE  # Now type-safe!
+var current_scene_node: Node = null
 var scene_container: Node = null
-var level_spawner : MultiplayerSpawner = null
+var level_spawner: MultiplayerSpawner = null
 
 func _ready():
-	# Wait for root scene to be ready
 	await get_tree().process_frame
-
-	# Get reference to the container
 	scene_container = get_node("/root/Multiplayer/SceneContainer")
-	# Lobby.server_closed.connect()
-	
 	level_spawner = get_node("/root/Multiplayer/LevelSpawner")
-	
 	level_spawner.spawned.connect(_on_spawned)
+	Lobby.server_closed.connect(reset_current)
 
-
-# Local scene change (single-player or menus)
 func change_scene(scene: Scene):
-	var scene_path = SCENE_PATHS[scene]
-	_load_scene.call_deferred(scene_path)
+	_load_scene.call_deferred(scene)
 
-
-# Multiplayer scene change (server tells everyone)
 func change_scene_multiplayer(scene: Scene):
 	if not Lobby.is_host():
 		push_error("Only host can change scenes!")
 		return
+	_load_scene.call_deferred(scene)
 
-	var scene_path = SCENE_PATHS[scene]
-#	_change_scene_for_all.rpc(scene_path)
-	_load_scene.call_deferred(scene_path)
+@rpc("authority", "call_local", "reliable")
+func set_current_scene(scene: Scene):
+	current_scene = scene
 
 func _on_spawned(level: Node) -> void:
-	MenuManager.hide_all_menus()	
+	MenuManager.hide_all_menus()
+	
+func reset_current():
+	current_scene = Scene.NONE
+	current_scene_node = null
 
-func _load_scene(scene_path: String):
-	var old_path = ""
-
+func _load_scene(scene: Scene):
+	var old_scene = current_scene
+	
 	# Remove current scene
-	if current_scene:
-		old_path = current_scene.scene_file_path
-		scene_changing.emit(old_path, scene_path)
-		current_scene.queue_free()
-		await current_scene.tree_exited
-
+	if current_scene_node:
+		scene_changing.emit(old_scene, scene)
+		current_scene_node.queue_free()
+		await current_scene_node.tree_exited
+	
 	# Load new scene
+	var scene_path = SCENE_PATHS[scene]
 	var new_scene = load(scene_path).instantiate()
 	scene_container.add_child(new_scene, true)
-	current_scene = new_scene
+	current_scene_node = new_scene
+	
+	set_current_scene.rpc(scene)
+	scene_changed.emit(scene)
 
-	scene_changed.emit(scene_path)
+func is_in_game() -> bool:
+	return current_scene == Scene.GAME
+
+# Optional: Get current scene path if needed elsewhere
+func get_current_scene_path() -> String:
+	if current_scene == Scene.NONE:
+		return ""
+	return SCENE_PATHS.get(current_scene, "")

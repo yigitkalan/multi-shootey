@@ -66,8 +66,6 @@ func _get_area_bodies(area: Area2D) -> Array[Player]:
 	for body in bodies:
 		if body is Player:
 			players.append(body)
-	print(area.name)
-	print(len(players))
 	return players
 	
 func _calculate_hitback_force(target: Node2D):

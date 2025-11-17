@@ -57,3 +57,4 @@ func spawn_player_for_peer(peer_id: int):
 	$Players.add_child(player, true)
 
 	spawned_players[peer_id] = player
+	

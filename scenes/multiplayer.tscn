@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://1ynfwg643qe0"]
+[gd_scene load_steps=5 format=3 uid="uid://1ynfwg643qe0"]
 
 [ext_resource type="PackedScene" uid="uid://dpk1u0ir03fuj" path="res://scenes/main_menu.tscn" id="1_crvko"]
 [ext_resource type="PackedScene" uid="uid://cbonn4i67ewpl" path="res://scenes/lobby_menu.tscn" id="3_36d77"]
 [ext_resource type="Script" uid="uid://coykuweg18tue" path="res://scripts/persistent_hud.gd" id="3_pjkx2"]
+[ext_resource type="PackedScene" uid="uid://dt74lcqi4pasu" path="res://scenes/pause_menu.tscn" id="4_4vwpp"]
 
 [node name="Multiplayer" type="Node"]
 
@@ -39,6 +40,8 @@ offset_right = 1086.0
 offset_bottom = 71.0
 
 [node name="LobbyMenu" parent="UILayer" instance=ExtResource("3_36d77")]
+
+[node name="PauseMenu" parent="UILayer" instance=ExtResource("4_4vwpp")]
 
 [node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://d0wig0rls33eu")

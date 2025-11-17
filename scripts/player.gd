@@ -65,7 +65,6 @@ func _physics_process(delta: float) -> void:
 		apply_central_force(Vector2(-linear_velocity.x * player_stat.movement_force, 0))
 
 func _on_died():
-	print(Lobby.player_info["name"], " DIED")
 	if  multiplayer.is_server():
 		remove_player.rpc()
 	if input.is_multiplayer_authority():

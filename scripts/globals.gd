@@ -1,3 +1,3 @@
 extends Node
 
-enum MenuName { MAIN, LOBBY }
+enum MenuName { MAIN, LOBBY, PAUSE }

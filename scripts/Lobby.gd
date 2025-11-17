@@ -178,7 +178,7 @@ func _server_shutdown() -> void:
 
 func _cleanup() -> void:
 	players.clear()
-
+	
 	if multiplayer.multiplayer_peer:
 		multiplayer.multiplayer_peer.close()
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
