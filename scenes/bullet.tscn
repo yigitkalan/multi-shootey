@@ -9,7 +9,6 @@ hit_damage = 2
 explosion_damage = 1
 explosion_range = 80.0
 explosion_force = 400.0
-cooldown = 1.0
 lifetime = 1.0
 velocity = 800.0
 metadata/_custom_type_script = "uid://dqfcontbu3piw"

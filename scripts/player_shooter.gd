@@ -6,25 +6,31 @@ signal shot(dir: Vector2)
 @export var shooter_stat: ShooterStat
 @onready var player_input: PlayerInput = $"../PlayerInput"
 @onready var bullet_spawner: MultiplayerSpawner = $"../BulletSpawner"
+@onready var shooting_point: Marker2D = $ShootingPoint
+
+var can_shoot: bool = true
 const BULLET_SCENE = preload("uid://ssa5260nc2ff")
 
 var next_bullet_direction: Vector2
-@onready var shooting_point: Marker2D = $ShootingPoint
 
 func _ready() -> void:
 	set_process(multiplayer.is_server())
+	player_input.set_cooldown(shooter_stat.cooldown)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if player_input.consume_shoot():
-		var bullet_dir = _calculate_bullet_dir(player_input.get_click_pos())
-		_spawn_bullet(bullet_dir)
+	if player_input.consume_shoot() and can_shoot:
+		var shot_power = player_input.get_shot_power()
+		var bullet_dir = _calculate_bullet_dir(player_input.get_click_pos()) * shot_power
+		_spawn_bullet(bullet_dir, shot_power)
 		shot.emit(get_knockback_force(bullet_dir))
+		player_input.reset_shot_gauge()
+		player_input.reset_current_cooldown()
+		
 		
 	look_at(player_input.get_click_pos())
 	
-
-func _spawn_bullet(bullet_dir: Vector2) -> void:
+func _spawn_bullet(bullet_dir: Vector2, shot_power: float) -> void:
 	if not multiplayer.is_server():
 		return
 	var bullet : Bullet = BULLET_SCENE.instantiate()

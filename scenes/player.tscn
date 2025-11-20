@@ -24,6 +24,7 @@ size = Vector2(16, 16)
 script = ExtResource("4_fjrip")
 knockback_force = 300
 knockback_duration = 0.15
+cooldown = 2.0
 metadata/_custom_type_script = "uid://c5dl4767j7a2a"
 
 [sub_resource type="Gradient" id="Gradient_rd3vj"]
