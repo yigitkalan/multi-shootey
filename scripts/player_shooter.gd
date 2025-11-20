@@ -1,52 +1,66 @@
+
 class_name Shooter
 extends Node2D
 
-signal shot(dir: Vector2)
+signal shot(knockback_force: Vector2)
 
 @export var shooter_stat: ShooterStat
+
 @onready var player_input: PlayerInput = $"../PlayerInput"
 @onready var bullet_spawner: MultiplayerSpawner = $"../BulletSpawner"
 @onready var shooting_point: Marker2D = $ShootingPoint
 
-var can_shoot: bool = true
 const BULLET_SCENE = preload("uid://ssa5260nc2ff")
 
-var next_bullet_direction: Vector2
-
 func _ready() -> void:
+	# Only server processes shooting logic
 	set_process(multiplayer.is_server())
 	player_input.set_cooldown(shooter_stat.cooldown)
+
+func _process(_delta: float) -> void:
+	# Check if player wants to shoot
+	if player_input.consume_shoot():
+		_handle_shoot_request()
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	if player_input.consume_shoot() and can_shoot:
-		var shot_power = player_input.get_shot_power()
-		var bullet_dir = _calculate_bullet_dir(player_input.get_click_pos()) * shot_power
-		_spawn_bullet(bullet_dir, shot_power)
-		shot.emit(get_knockback_force(bullet_dir))
-		player_input.reset_shot_gauge()
-		player_input.reset_current_cooldown()
-		
-		
-	look_at(player_input.get_click_pos())
+	# Visual feedback: point gun at mouse (even on server)
+	_update_aim_direction()
+
+func _handle_shoot_request() -> void:
+	# Capture power before resetting (handles cooldown case)
+	var shot_power = player_input.get_shot_power()
+	player_input.reset_shot_gauge()
 	
-func _spawn_bullet(bullet_dir: Vector2, shot_power: float) -> void:
-	if not multiplayer.is_server():
+	# Only shoot if not on cooldown
+	if player_input.is_on_cooldown():
 		return
-	var bullet : Bullet = BULLET_SCENE.instantiate()
+	
+	var click_pos = player_input.get_click_pos()
+	var bullet_dir = _calculate_bullet_dir(click_pos)
+	var bullet_velocity = bullet_dir * shot_power
+	
+	_spawn_bullet(bullet_velocity, shot_power)
+	
+	# Apply knockback to player
+	var knockback = _calculate_knockback(bullet_dir, shot_power)
+	shot.emit(knockback)
+	
+	# Start cooldown
+	player_input.reset_current_cooldown()
+
+func _spawn_bullet(velocity: Vector2, shot_power: float) -> void:
+	var bullet: Bullet = BULLET_SCENE.instantiate()
 	bullet.global_position = shooting_point.global_position
-	bullet.set_velocity(bullet_dir * bullet.bullet_stat.velocity)
+	bullet.set_velocity(velocity * bullet.bullet_stat.velocity)
+	# Optional: Scale bullet size/damage with shot_power
+	# bullet.set_power(shot_power)
 	bullet_spawner.add_child(bullet, true)
-		
-func _calculate_bullet_dir(click_pos: Vector2) -> Vector2:
-	# click_pos should already be in world coordinates
-	var dir: Vector2 = (click_pos - global_position).normalized()
-	return dir
-	
-func _calculate_spawn_position() -> Vector2:
-	return global_position + next_bullet_direction * 5000
-	
-func get_knockback_force(dir: Vector2) -> Vector2:
-	return -dir * shooter_stat.knockback_force
-	
-	
+
+func _calculate_bullet_dir(target_pos: Vector2) -> Vector2:
+	return (target_pos - global_position).normalized()
+
+func _calculate_knockback(bullet_dir: Vector2, shot_power: float) -> Vector2:
+	return -bullet_dir * shooter_stat.knockback_force * shot_power
+
+func _update_aim_direction() -> void:
+	var target_pos = player_input.get_click_pos()
+	look_at(target_pos)

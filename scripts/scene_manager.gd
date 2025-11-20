@@ -13,7 +13,7 @@ const SCENE_PATHS = {
 }
 
 var current_scene: Scene = Scene.NONE  # Now type-safe!
-var current_scene_node: Node = null
+var _current_scene_node: Node = null
 var scene_container: Node = null
 var level_spawner: MultiplayerSpawner = null
 
@@ -49,22 +49,22 @@ func _on_player_joined(peer_id: int, player_info: Dictionary):
 	
 func reset_current():
 	current_scene = Scene.NONE
-	current_scene_node = null
+	_current_scene_node = null
 
 func _load_scene(scene: Scene):
 	var old_scene = current_scene
 	
 	# Remove current scene
-	if current_scene_node:
+	if _current_scene_node:
 		scene_changing.emit(old_scene, scene)
-		current_scene_node.queue_free()
-		await current_scene_node.tree_exited
+		_current_scene_node.queue_free()
+		await _current_scene_node.tree_exited
 	
 	# Load new scene
 	var scene_path = SCENE_PATHS[scene]
 	var new_scene = load(scene_path).instantiate()
 	scene_container.add_child(new_scene, true)
-	current_scene_node = new_scene
+	_current_scene_node = new_scene
 	
 	set_current_scene.rpc(scene)
 	
