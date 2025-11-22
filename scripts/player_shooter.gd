@@ -36,9 +36,8 @@ func _handle_shoot_request() -> void:
 	
 	var click_pos = player_input.get_click_pos()
 	var bullet_dir = _calculate_bullet_dir(click_pos)
-	var bullet_velocity = bullet_dir * shot_power
 	
-	_spawn_bullet(bullet_velocity, shot_power)
+	_spawn_bullet(bullet_dir, shot_power)
 	
 	# Apply knockback to player
 	var knockback = _calculate_knockback(bullet_dir, shot_power)
@@ -47,12 +46,11 @@ func _handle_shoot_request() -> void:
 	# Start cooldown
 	player_input.reset_current_cooldown()
 
-func _spawn_bullet(velocity: Vector2, shot_power: float) -> void:
+func _spawn_bullet(bullet_dir: Vector2, shot_power: float) -> void:
 	var bullet: Bullet = BULLET_SCENE.instantiate()
 	bullet.global_position = shooting_point.global_position
-	bullet.set_velocity(velocity * bullet.bullet_stat.velocity)
-	# Optional: Scale bullet size/damage with shot_power
-	# bullet.set_power(shot_power)
+	bullet.set_velocity(bullet_dir * bullet.bullet_stat.velocity)
+	bullet.set_bullet_multiplier(shot_power)
 	bullet_spawner.add_child(bullet, true)
 
 func _calculate_bullet_dir(target_pos: Vector2) -> Vector2:

@@ -9,7 +9,7 @@ hit_damage = 2
 explosion_damage = 1
 explosion_range = 80.0
 explosion_force = 400.0
-lifetime = 1.0
+lifetime = 2.0
 velocity = 800.0
 metadata/_custom_type_script = "uid://dqfcontbu3piw"
 
@@ -19,15 +19,24 @@ radius = 6.0
 [sub_resource type="SphereMesh" id="SphereMesh_y25gk"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_h1aey"]
-properties/0/path = NodePath(".:linear_velocity")
+properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 2
-properties/1/path = NodePath(".:position")
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:freeze")
 properties/1/spawn = true
-properties/1/replication_mode = 0
-properties/2/path = NodePath(".:freeze")
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:scale")
 properties/2/spawn = true
 properties/2/replication_mode = 2
+properties/3/path = NodePath("MeshInstance2D:scale")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath("BulletCollider:scale")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath(".:multiplier")
+properties/5/spawn = true
+properties/5/replication_mode = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_y25gk"]
 radius = 20.0
@@ -35,6 +44,7 @@ radius = 20.0
 [node name="Bullet" type="RigidBody2D"]
 collision_mask = 6
 gravity_scale = 0.0
+continuous_cd = 1
 contact_monitor = true
 max_contacts_reported = 1
 script = ExtResource("1_mkf8s")
@@ -44,7 +54,7 @@ bullet_stat = SubResource("Resource_l5glv")
 shape = SubResource("CircleShape2D_mkf8s")
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="."]
-scale = Vector2(10.654889, 10.654889)
+scale = Vector2(10, 10)
 mesh = SubResource("SphereMesh_y25gk")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
