@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b2xyd22qyvitu"]
+[gd_scene load_steps=19 format=3 uid="uid://b2xyd22qyvitu"]
 
 [ext_resource type="Script" uid="uid://dt3nhsns6lfti" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://drq2bphy4y2ku" path="res://scripts/player_input.gd" id="2_g2els"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cbwxn08wwgip3" path="res://scripts/player_health.gd" id="4_dqkch"]
 [ext_resource type="Script" uid="uid://c5dl4767j7a2a" path="res://resources/shooter_stat.gd" id="4_fjrip"]
 [ext_resource type="Script" uid="uid://ds1v72aqd1ena" path="res://resources/health_stat.gd" id="5_qlg0r"]
+[ext_resource type="Script" uid="uid://b85e76xkujo2a" path="res://scripts/health_bar.gd" id="8_smehm"]
 
 [sub_resource type="Resource" id="Resource_fjrip"]
 script = ExtResource("2_tuyoq")
@@ -55,16 +56,26 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath("PlayerHealth:current_health")
 properties/4/spawn = true
 properties/4/replication_mode = 2
+properties/5/path = NodePath("HealthBar:value")
+properties/5/spawn = true
+properties/5/replication_mode = 2
 
 [sub_resource type="Resource" id="Resource_tuyoq"]
 script = ExtResource("5_qlg0r")
 max_health = 4
 metadata/_custom_type_script = "uid://ds1v72aqd1ena"
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_smehm"]
+bg_color = Color(0.37409055, 0, 0.13411218, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fjrip"]
+bg_color = Color(0, 0.7134115, 0.4364251, 1)
+
 [node name="Player" type="RigidBody2D"]
 collision_layer = 2
 collision_mask = 13
 mass = 0.5
+continuous_cd = 1
 script = ExtResource("1_3vyb7")
 player_stat = SubResource("Resource_fjrip")
 
@@ -84,7 +95,8 @@ shooter_stat = SubResource("Resource_smehm")
 [node name="ShootingPoint" type="Marker2D" parent="Shooter"]
 position = Vector2(29.998123, -0.3354326)
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="PlayerSprite" type="Sprite2D" parent="."]
+z_index = 1
 scale = Vector2(0.07436019, -17.93674)
 texture = SubResource("GradientTexture1D_2q6dc")
 
@@ -114,3 +126,14 @@ collision_mask = 4
 rotation = 1.5707964
 target_position = Vector2(0, 15)
 collision_mask = 4
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -10.0
+offset_top = -16.0
+offset_right = 9.0
+offset_bottom = -11.0
+theme_override_styles/background = SubResource("StyleBoxFlat_smehm")
+theme_override_styles/fill = SubResource("StyleBoxFlat_fjrip")
+value = 100.0
+show_percentage = false
+script = ExtResource("8_smehm")

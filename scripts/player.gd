@@ -9,6 +9,7 @@ extends RigidBody2D
 @onready var left_check: RayCast2D = $LeftCheck
 @onready var player_health: PlayerHealth = $PlayerHealth
 @onready var shooter: Shooter = $Shooter
+@onready var health_bar: HealthBar = $HealthBar
 
 
 var knockback_time = 0.0
@@ -27,8 +28,10 @@ var knockback_time = 0.0
 
 func _ready() -> void:
 	linear_damp = 3.0  # Acts like air resistance/friction
-	player_health.died.connect(_on_died)	
-	shooter.shot.connect(apply_knockback)
+	if multiplayer.is_server():
+		player_health.died.connect(_on_died)	
+		shooter.shot.connect(apply_knockback)
+	player_health.took_damage.connect(health_bar.update_bar)
 	lock_rotation = true
 	
 func _process(delta: float) -> void:
