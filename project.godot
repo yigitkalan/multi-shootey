@@ -21,6 +21,7 @@ Lobby="*res://scripts/lobby.gd"
 SceneManager="*res://scripts/scene_manager.gd"
 MenuManager="*res://scripts/menu_manager.gd"
 Globals="*res://scripts/globals.gd"
+EventBus="*res://scripts/event_bus.gd"
 
 [display]
 
