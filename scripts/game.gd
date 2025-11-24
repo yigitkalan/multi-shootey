@@ -5,6 +5,8 @@ const PLAYER_SCENE := preload("uid://b2xyd22qyvitu")
 @onready var spawn_points: Array = $SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
 
+@onready var round_starting_menu: RoundStartingMenu = $Layer/RoundStarting
+
 var spawned_players := {}
 
 
@@ -14,9 +16,14 @@ func _ready() -> void:
 	Lobby.player_joined.connect(_on_lobby_player_joined)
 	Lobby.player_left.connect(_on_lobby_player_left)
 
+	round_starting_menu.initalize_countdown()
 	if multiplayer.is_server():
-		for peer_id in Lobby.players.keys():
-			spawn_player_for_peer(peer_id)
+		round_starting_menu.start_round_requested.connect(spawn_existing_players)
+
+
+func spawn_existing_players():
+	for peer_id in Lobby.players.keys():
+		spawn_player_for_peer(peer_id)
 
 
 func _on_lobby_player_joined(peer_id: int, player_info: Dictionary):
@@ -57,4 +64,3 @@ func spawn_player_for_peer(peer_id: int):
 	$Players.add_child(player, true)
 
 	spawned_players[peer_id] = player
-	
