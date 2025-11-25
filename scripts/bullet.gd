@@ -71,7 +71,7 @@ func _set_area_radius(area: Area2D, radius: float) -> void:
 				
 func _get_area_bodies(area: Area2D) -> Array[Player]:
 	var bodies = area.get_overlapping_bodies()
-	var players : Array[Player] = []
+	var players: Array[Player] = []
 	for body in bodies:
 		if body is Player:
 			players.append(body)
@@ -91,4 +91,8 @@ func _fade_and_destroy() -> void:
 	# Fade out over 1 second
 	var tween = create_tween()
 	tween.tween_property(self, "modulate:a", 0.0, 1.0)
-	tween.tween_callback(queue_free.call_deferred)
+	
+	# Only server destroys the object
+	# Clients wait for replication to remove it
+	if multiplayer.is_server():
+		tween.tween_callback(queue_free.call_deferred)

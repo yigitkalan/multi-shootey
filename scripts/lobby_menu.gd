@@ -35,7 +35,6 @@ func _on_disconnect_pressed():
 func _on_start_pressed():
 	if not Lobby.is_host():
 		return
-	GameManager.change_state(GameManager.GameState.PRE_ROUND)
 	MenuManager.hide_all_menus.rpc()
 	SceneManager.change_scene_multiplayer(SceneManager.Scene.GAME)
 
