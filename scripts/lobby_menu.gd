@@ -1,6 +1,6 @@
 extends MenuBase
 
-@onready 
+@onready
 var status_label: Label = $TextureRect/Panel/MarginContainer/Lobby/HBoxContainer/Label
 @onready
 var disconnect_button: Button = $TextureRect/Panel/MarginContainer/Lobby/HBoxContainer/DisconnectButton
@@ -35,12 +35,13 @@ func _on_disconnect_pressed():
 func _on_start_pressed():
 	if not Lobby.is_host():
 		return
+	GameManager.change_state(GameManager.GameState.PRE_ROUND)
 	MenuManager.hide_all_menus.rpc()
 	SceneManager.change_scene_multiplayer(SceneManager.Scene.GAME)
 
 
 func open():
-	super()
+	super ()
 	if !Lobby.is_host():
 		start_button.visible = false
 

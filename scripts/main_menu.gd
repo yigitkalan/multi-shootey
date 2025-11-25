@@ -19,6 +19,7 @@ func _on_host_pressed():
 		label.text = "Failed to host!"
 		label.modulate = Color.RED
 		return
+	GameManager.change_state(GameManager.GameState.LOBBY)
 	MenuManager.show_menu(Globals.MenuName.LOBBY)
 
 
@@ -37,6 +38,6 @@ func _on_username_changed():
 
 
 func open():
-	super()
+	super ()
 	# await get_tree().process_frame
 	label.text = ""

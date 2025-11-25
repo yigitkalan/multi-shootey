@@ -27,13 +27,13 @@ var knockback_time = 0.0
 
 
 func _ready() -> void:
-	linear_damp = 3.0  # Acts like air resistance/friction
+	linear_damp = 3.0 # Acts like air resistance/friction
 	if multiplayer.is_server():
-		player_health.died.connect(_on_died)	
+		player_health.died.connect(_on_died)
 		shooter.shot.connect(apply_knockback)
 	player_health.took_damage.connect(health_bar.update_bar)
 	lock_rotation = true
-	
+
 func _process(delta: float) -> void:
 	knockback_time = max(knockback_time - delta, 0)
 
@@ -44,7 +44,7 @@ func _physics_process(delta: float) -> void:
 	var on_floor = ground_check.is_colliding()
 	
 	if knockback_time > 0:
-		return  # Skip normal movement force
+		return # Skip normal movement force
 		
 	if not input.can_double_jump() and on_floor:
 		input.reset_jump_count()
@@ -71,7 +71,7 @@ func _physics_process(delta: float) -> void:
 		apply_central_force(Vector2(-linear_velocity.x * player_stat.movement_force, 0))
 
 func _on_died():
-	if  multiplayer.is_server():
+	if multiplayer.is_server():
 		remove_player.rpc()
 	if input.is_multiplayer_authority():
 		#maybe lose screen or spectator etc. these will be local changes
