@@ -9,6 +9,9 @@
 [ext_resource type="Script" uid="uid://ds1v72aqd1ena" path="res://resources/health_stat.gd" id="5_qlg0r"]
 [ext_resource type="Script" uid="uid://b85e76xkujo2a" path="res://scripts/health_bar.gd" id="8_smehm"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_smehm"]
+friction = 0.0
+
 [sub_resource type="Resource" id="Resource_fjrip"]
 script = ExtResource("2_tuyoq")
 movement_force = 10
@@ -71,12 +74,11 @@ bg_color = Color(0.37409055, 0, 0.13411218, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fjrip"]
 bg_color = Color(0, 0.7134115, 0.4364251, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_smehm"]
-
 [node name="Player" type="RigidBody2D"]
 collision_layer = 2
 collision_mask = 13
 mass = 0.5
+physics_material_override = SubResource("PhysicsMaterial_smehm")
 continuous_cd = 1
 script = ExtResource("1_3vyb7")
 player_stat = SubResource("Resource_fjrip")
@@ -129,17 +131,3 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_fjrip")
 value = 100.0
 show_percentage = false
 script = ExtResource("8_smehm")
-
-[node name="RightCheck" type="ShapeCast2D" parent="."]
-rotation = -1.5707964
-scale = Vector2(0.7, 0.944)
-shape = SubResource("RectangleShape2D_smehm")
-target_position = Vector2(-2.1855695e-07, 5)
-collision_mask = 4
-
-[node name="LeftCheck" type="ShapeCast2D" parent="."]
-rotation = -4.712389
-scale = Vector2(0.7, 0.944)
-shape = SubResource("RectangleShape2D_smehm")
-target_position = Vector2(-2.1855695e-07, 5)
-collision_mask = 4

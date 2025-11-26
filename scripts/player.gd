@@ -5,8 +5,6 @@ extends RigidBody2D
 
 @onready var input: PlayerInput = $PlayerInput
 @onready var ground_check: RayCast2D = $GroundCheck
-@onready var right_check: ShapeCast2D = $RightCheck
-@onready var left_check: ShapeCast2D = $LeftCheck
 @onready var player_health: PlayerHealth = $PlayerHealth
 @onready var shooter: Shooter = $Shooter
 @onready var health_bar: HealthBar = $HealthBar
@@ -56,11 +54,7 @@ func _physics_process(delta: float) -> void:
 	
 	# Movement - apply forces
 	var dir = input.direction
-	var pushing_into_wall: bool = (dir.x > 0 and right_check.is_colliding()) or (dir.x < 0 and left_check.is_colliding())
 	
-	if pushing_into_wall:
-		return
-		
 	if dir != Vector2.ZERO:
 		var movement_multiplier = 1.0 if on_floor else player_stat.air_movement_coefficient
 		var target_velocity = dir.x * player_stat.max_velocity
