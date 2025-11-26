@@ -5,8 +5,8 @@ extends RigidBody2D
 
 @onready var input: PlayerInput = $PlayerInput
 @onready var ground_check: RayCast2D = $GroundCheck
-@onready var right_check: RayCast2D = $RightCheck
-@onready var left_check: RayCast2D = $LeftCheck
+@onready var right_check: ShapeCast2D = $RightCheck
+@onready var left_check: ShapeCast2D = $LeftCheck
 @onready var player_health: PlayerHealth = $PlayerHealth
 @onready var shooter: Shooter = $Shooter
 @onready var health_bar: HealthBar = $HealthBar

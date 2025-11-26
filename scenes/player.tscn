@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b2xyd22qyvitu"]
+[gd_scene load_steps=20 format=3 uid="uid://b2xyd22qyvitu"]
 
 [ext_resource type="Script" uid="uid://dt3nhsns6lfti" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://drq2bphy4y2ku" path="res://scripts/player_input.gd" id="2_g2els"]
@@ -71,6 +71,8 @@ bg_color = Color(0.37409055, 0, 0.13411218, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fjrip"]
 bg_color = Color(0, 0.7134115, 0.4364251, 1)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_smehm"]
+
 [node name="Player" type="RigidBody2D"]
 collision_layer = 2
 collision_mask = 13
@@ -117,16 +119,6 @@ health_stat = SubResource("Resource_tuyoq")
 target_position = Vector2(0, 20)
 collision_mask = 4
 
-[node name="RightCheck" type="RayCast2D" parent="."]
-rotation = -1.5707964
-target_position = Vector2(0, 15)
-collision_mask = 4
-
-[node name="LeftCheck" type="RayCast2D" parent="."]
-rotation = 1.5707964
-target_position = Vector2(0, 15)
-collision_mask = 4
-
 [node name="HealthBar" type="ProgressBar" parent="."]
 offset_left = -10.0
 offset_top = -16.0
@@ -137,3 +129,17 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_fjrip")
 value = 100.0
 show_percentage = false
 script = ExtResource("8_smehm")
+
+[node name="RightCheck" type="ShapeCast2D" parent="."]
+rotation = -1.5707964
+scale = Vector2(0.7, 0.944)
+shape = SubResource("RectangleShape2D_smehm")
+target_position = Vector2(-2.1855695e-07, 5)
+collision_mask = 4
+
+[node name="LeftCheck" type="ShapeCast2D" parent="."]
+rotation = -4.712389
+scale = Vector2(0.7, 0.944)
+shape = SubResource("RectangleShape2D_smehm")
+target_position = Vector2(-2.1855695e-07, 5)
+collision_mask = 4
