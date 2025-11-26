@@ -33,14 +33,13 @@ func open_initial():
 	show_menu(initial_menu)
 
 
+@rpc("authority", "call_local", "reliable")
 func show_menu(menu_name: Globals.MenuName) -> void:
 	if current_menu != null:
 		current_menu.close()
 	var next_menu: MenuBase = menus.get(menu_name, null)
 	if next_menu != null:
 		next_menu.open()
-		# if current_menu != null:
-		# 	print("maybe signal")
 		current_menu = next_menu
 	else:
 		push_error("MenuManager: No menu found with name %s" % str(menu_name))

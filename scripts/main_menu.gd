@@ -19,7 +19,7 @@ func _on_host_pressed():
 		label.text = "Failed to host!"
 		label.modulate = Color.RED
 		return
-	GameManager.change_state(GameManager.GameState.LOBBY)
+	GameManager.change_state(Globals.GameState.LOBBY)
 	MenuManager.show_menu(Globals.MenuName.LOBBY)
 
 

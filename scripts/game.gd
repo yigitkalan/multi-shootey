@@ -4,36 +4,19 @@ const PLAYER_SCENE := preload("uid://b2xyd22qyvitu")
 @onready var spawn_points: Array = $SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
 
-@onready var pre_round_menu: PreRoundMenu = $Layer/PreRoundMenu
-
 var spawned_players := {}
 
 
 func _ready() -> void:
 	await get_tree().process_frame
 
-	GameManager.state_changed.connect(_on_game_state_changed)
 	Lobby.player_joined.connect(_on_lobby_player_joined)
 	Lobby.player_left.connect(_on_lobby_player_left)
-	GameManager.change_state(GameManager.GameState.PRE_ROUND)
+	GameManager.change_state(Globals.GameState.PRE_ROUND)
 
+	if Lobby.is_host():
+		spawn_existing_players()
 
-func _on_game_state_changed(state: GameManager.GameState):
-	match state:
-		GameManager.GameState.PRE_ROUND:
-			if not multiplayer.is_server():
-				return
-			pre_round_menu.initalize_countdown.rpc()
-		GameManager.GameState.IN_ROUND:
-			if not multiplayer.is_server():
-				return
-			pre_round_menu.hide()
-			spawn_existing_players()
-		GameManager.GameState.POST_ROUND:
-			if not multiplayer.is_server():
-				# TODO: Show post round menu scores etc
-				return
-			# pre_round_menu.show()
 
 func spawn_existing_players():
 	for peer_id in Lobby.players.keys():
@@ -78,3 +61,5 @@ func spawn_player_for_peer(peer_id: int):
 	$Players.add_child(player, true)
 
 	spawned_players[peer_id] = player
+
+	GameManager.add_player(peer_id)

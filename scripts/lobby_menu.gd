@@ -36,7 +36,7 @@ func _on_start_pressed():
 	if not Lobby.is_host():
 		return
 	MenuManager.hide_all_menus.rpc()
-	SceneManager.change_scene_multiplayer(SceneManager.Scene.GAME)
+	MenuManager.show_menu.rpc(Globals.MenuName.PRE_ROUND)
 
 
 func open():

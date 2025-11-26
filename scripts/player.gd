@@ -73,6 +73,7 @@ func _physics_process(delta: float) -> void:
 func _on_died():
 	if multiplayer.is_server():
 		remove_player.rpc()
+		GameManager.kill_player(player_id)
 	if input.is_multiplayer_authority():
 		#maybe lose screen or spectator etc. these will be local changes
 		pass

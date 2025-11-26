@@ -1,3 +1,4 @@
 extends Node
 
-enum MenuName { MAIN, LOBBY, PAUSE }
+enum MenuName {MAIN, LOBBY, PAUSE, PRE_ROUND, POST_ROUND, GAME_OVER}
+enum GameState {LOBBY, PRE_ROUND, IN_ROUND, POST_ROUND, GAME_OVER}
