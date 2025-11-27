@@ -32,7 +32,7 @@ func _destroy_bullet_with_target(target: Node):
 	var applied_player_ids: Array[int] = []
 	
 	# Direct hit
-	if target is Player:
+	if target is DeathmatchPlayer:
 		applied_player_ids.append(target.player_id)
 		target.player_health.take_damage(bullet_stat.hit_damage)
 		target.apply_knockback(_calculate_hitback_force(target))
@@ -40,7 +40,6 @@ func _destroy_bullet_with_target(target: Node):
 	# Trigger area checks on next frame
 	await get_tree().physics_frame
 	
-	# ✅ Check if bullet still exists
 	if not is_instance_valid(self):
 		return
 	
@@ -69,11 +68,11 @@ func _set_area_radius(area: Area2D, radius: float) -> void:
 			if shape is CircleShape2D:
 				shape.radius = bullet_stat.explosion_range * multiplier
 				
-func _get_area_bodies(area: Area2D) -> Array[Player]:
+func _get_area_bodies(area: Area2D) -> Array[DeathmatchPlayer]:
 	var bodies = area.get_overlapping_bodies()
-	var players: Array[Player] = []
+	var players: Array[DeathmatchPlayer] = []
 	for body in bodies:
-		if body is Player:
+		if body is DeathmatchPlayer:
 			players.append(body)
 	return players
 	

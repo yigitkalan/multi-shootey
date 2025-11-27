@@ -54,7 +54,7 @@ func _refresh_player_list():
 	for peer_id in Lobby.players.keys():
 		var player_info = Lobby.players[peer_id]
 		var entry = Label.new()
-		entry.text = player_info.get("name", "Player %d" % peer_id)
+		entry.text = player_info.get("name", "DeatchmatchPlayer %d" % peer_id)
 
 		# Highlight local player
 		if peer_id == Lobby.get_local_peer_id():

@@ -1,48 +1,100 @@
 extends Node
 
-
+# State management
 var current_state: Globals.GameState = Globals.GameState.LOBBY
-var player_scores: Dictionary = {}
-var alive_players: Array[int] = []
 var round_number: int = 0
 var max_rounds: int = 3
 
-signal state_changed(new_state: Globals.GameState)
-signal player_died(peer_id: int)
-signal round_winner(peer_id: int)
+# Mode management
+var current_mode: GameMode = null
 
-func change_state(new_state: Globals.GameState):
+# Score tracking (persists across rounds)
+var player_scores: Dictionary = {}
+
+# Signals
+signal state_changed(new_state: Globals.GameState)
+signal round_ended(winner_ids: Array[int])
+signal mode_data_changed(data: Dictionary)
+
+
+func _ready() -> void:
+	# Will be set by the game scene when it loads
+	pass
+
+
+func set_active_mode(mode: GameMode) -> void:
+	# Disconnect old mode if exists
+	if current_mode:
+		if current_mode.round_should_end.is_connected(_on_mode_round_end):
+			current_mode.round_should_end.disconnect(_on_mode_round_end)
+		if current_mode.data_updated.is_connected(_on_mode_data_updated):
+			current_mode.data_updated.disconnect(_on_mode_data_updated)
+	
+	# Connect new mode
+	current_mode = mode
+	if current_mode:
+		current_mode.round_should_end.connect(_on_mode_round_end)
+		current_mode.data_updated.connect(_on_mode_data_updated)
+
+
+func change_state(new_state: Globals.GameState) -> void:
+	if not multiplayer.is_server():
+		return
+		
 	current_state = new_state
-	state_changed.emit(new_state)
+	_sync_state.rpc(new_state)
 	_on_state_entered(new_state)
 
-func kill_player(player_id: int):
-	alive_players.erase(player_id)
-	player_died.emit(player_id)
-	if alive_players.size() == 1:
-		var winner_id = alive_players[0]
-		round_winner.emit(winner_id)
-		player_scores[winner_id] += 1
-		if player_scores[winner_id] >= max_rounds:
-			change_state(Globals.GameState.GAME_OVER)
-			return
-		change_state(Globals.GameState.POST_ROUND)
-		return
-	
-func add_player(player_id: int):
-	alive_players.append(player_id)
-	player_scores[player_id] = 0
-		
-	
-func _on_state_entered(state: Globals.GameState):
+
+@rpc("authority", "call_local", "reliable")
+func _sync_state(new_state: Globals.GameState) -> void:
+	current_state = new_state
+	state_changed.emit(new_state)
+
+
+func _on_state_entered(state: Globals.GameState) -> void:
 	match state:
 		Globals.GameState.PRE_ROUND:
-			player_scores.clear()
-			alive_players.clear()
-			pass
+			round_number += 1
+				
 		Globals.GameState.IN_ROUND:
-			# _start_round()
-			pass
+			if current_mode:
+				current_mode.on_round_start()
 		Globals.GameState.POST_ROUND:
-			# _end_round()
-			pass
+			if current_mode:
+				var winner_ids = current_mode.get_winner_ids()
+				_award_points(winner_ids)
+				round_ended.emit(winner_ids)
+				current_mode.on_round_end()
+			
+			# Auto-transition to next round after delay (if not max rounds)
+			if multiplayer.is_server():
+				await get_tree().create_timer(5.0).timeout
+				if round_number >= max_rounds:
+					change_state(Globals.GameState.GAME_OVER)
+				else:
+					change_state(Globals.GameState.PRE_ROUND)
+
+
+func _award_points(winner_ids: Array[int]) -> void:
+	for winner_id in winner_ids:
+		if not player_scores.has(winner_id):
+			player_scores[winner_id] = 0
+		player_scores[winner_id] += 1
+
+
+func _on_mode_round_end() -> void:
+	# Mode signaled that round should end
+	if multiplayer.is_server():
+		change_state(Globals.GameState.POST_ROUND)
+
+
+func _on_mode_data_updated() -> void:
+	# Mode signaled that UI data changed
+	if current_mode:
+		mode_data_changed.emit(current_mode.get_mode_data())
+
+
+func init_player_score(player_id: int) -> void:
+	if not player_scores.has(player_id):
+		player_scores[player_id] = 0

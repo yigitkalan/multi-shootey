@@ -3,27 +3,29 @@ extends Node2D
 const PLAYER_SCENE := preload("uid://b2xyd22qyvitu")
 @onready var spawn_points: Array = $SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
+@onready var game_mode: DeathmatchMode = $DeathmatchMode
 
 var spawned_players := {}
 
 
 func _ready() -> void:
 	await get_tree().process_frame
-
+	
+	GameManager.set_active_mode(game_mode)
+	
+	# Connect signals
 	Lobby.player_joined.connect(_on_lobby_player_joined)
 	Lobby.player_left.connect(_on_lobby_player_left)
-	GameManager.change_state(Globals.GameState.PRE_ROUND)
-
-	if Lobby.is_host():
+	
+	if multiplayer.is_server():
 		spawn_existing_players()
 
-
-func spawn_existing_players():
+func spawn_existing_players() -> void:
 	for peer_id in Lobby.players.keys():
 		spawn_player_for_peer(peer_id)
 
 
-func _on_lobby_player_joined(peer_id: int, player_info: Dictionary):
+func _on_lobby_player_joined(peer_id: int, _player_info: Dictionary) -> void:
 	if not multiplayer.is_server():
 		return
 	await get_tree().create_timer(0.5).timeout
@@ -31,7 +33,7 @@ func _on_lobby_player_joined(peer_id: int, player_info: Dictionary):
 		spawn_player_for_peer(peer_id)
 
 
-func _on_lobby_player_left(peer_id: int, player_info: Dictionary):
+func _on_lobby_player_left(peer_id: int, _player_info: Dictionary) -> void:
 	if not multiplayer.is_server():
 		return
 	if spawned_players.has(peer_id):
@@ -39,9 +41,13 @@ func _on_lobby_player_left(peer_id: int, player_info: Dictionary):
 		if is_instance_valid(player_node):
 			player_node.queue_free()
 		spawned_players.erase(peer_id)
+		
+		# Notify mode that player left
+		if game_mode and game_mode.has_method("on_player_eliminated"):
+			game_mode.on_player_eliminated(peer_id)
 
 
-func spawn_player_for_peer(peer_id: int):
+func spawn_player_for_peer(peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 	if spawned_players.has(peer_id):
@@ -61,5 +67,10 @@ func spawn_player_for_peer(peer_id: int):
 	$Players.add_child(player, true)
 
 	spawned_players[peer_id] = player
-
-	GameManager.add_player(peer_id)
+	
+	# Initialize player score
+	GameManager.init_player_score(peer_id)
+	
+	# Notify mode that player spawned
+	if game_mode and game_mode.has_method("on_player_spawned"):
+		game_mode.on_player_spawned(peer_id)

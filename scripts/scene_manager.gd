@@ -3,11 +3,11 @@ extends Node
 signal scene_changing(from_scene: Scene, to_scene: Scene)
 signal scene_changed(scene: Scene)
 
-enum Scene { NONE = -1, GAME = 0 }  # Explicit "no scene" state
+enum Scene {NONE = -1, DEATHMATCH = 0} # Explicit "no scene" state
 
-const SCENE_PATHS = {Scene.GAME: "res://scenes/game.tscn"}
+const SCENE_PATHS = {Scene.DEATHMATCH: "res://scenes/deathmatch_game.tscn"}
 
-var current_scene: Scene = Scene.NONE  # Now type-safe!
+var current_scene: Scene = Scene.NONE # Now type-safe!
 var _current_scene_node: Node = null
 var scene_container: Node = null
 var level_spawner: MultiplayerSpawner = null
@@ -74,7 +74,7 @@ func _load_scene(scene: Scene):
 
 
 func is_in_game() -> bool:
-	return current_scene == Scene.GAME
+	return current_scene == Scene.DEATHMATCH
 
 
 # Optional: Get current scene path if needed elsewhere

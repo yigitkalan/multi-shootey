@@ -1,4 +1,3 @@
-
 class_name Shooter
 extends Node2D
 
@@ -13,6 +12,9 @@ signal shot(knockback_force: Vector2)
 const BULLET_SCENE = preload("uid://ssa5260nc2ff")
 
 func _ready() -> void:
+	# Ensure all child nodes are ready before accessing them
+	await get_tree().process_frame
+	
 	# Only server processes shooting logic
 	set_process(multiplayer.is_server())
 	player_input.set_cooldown(shooter_stat.cooldown)

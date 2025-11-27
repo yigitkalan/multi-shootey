@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://d0wig0rls33eu"]
+[gd_scene load_steps=6 format=3 uid="uid://d0wig0rls33eu"]
 
-[ext_resource type="Script" uid="uid://chfvtjwfm4n2k" path="res://scripts/game.gd" id="1_uwrxv"]
+[ext_resource type="Script" uid="uid://chfvtjwfm4n2k" path="res://scripts/deatchmatch_game.gd" id="1_vdydl"]
+[ext_resource type="Script" uid="uid://dyutfjvhg73dk" path="res://scripts/deathmatch_mode.gd" id="2_pxvna"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uwrxv"]
 size = Vector2(160, 18)
@@ -12,8 +13,8 @@ colors = PackedColorArray(1, 1, 1, 1)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_lnu2h"]
 gradient = SubResource("Gradient_yqjtg")
 
-[node name="Level" type="Node2D"]
-script = ExtResource("1_uwrxv")
+[node name="DeathMatchGame" type="Node2D"]
+script = ExtResource("1_vdydl")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(1, -1)
@@ -30,7 +31,6 @@ position = Vector2(472, 281)
 [node name="Players" type="Node" parent="."]
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://b2xyd22qyvitu")
 spawn_path = NodePath("../Players")
 
 [node name="Grounds" type="Node" parent="."]
@@ -96,3 +96,7 @@ shape = SubResource("RectangleShape2D_uwrxv")
 [node name="Sprite2D" type="Sprite2D" parent="Grounds/Island3"]
 scale = Vector2(2.5027564, 0.27400684)
 texture = SubResource("GradientTexture2D_lnu2h")
+
+[node name="DeathmatchMode" type="Node" parent="."]
+script = ExtResource("2_pxvna")
+metadata/_custom_type_script = "uid://dyutfjvhg73dk"

@@ -9,7 +9,7 @@ const PORT := 7000
 const DEFAULT_SERVER_IP := "127.0.0.1"
 const MAX_CONNECTIONS := 4
 
-var players: Dictionary = {}  # {peer_id: player_info}
+var players: Dictionary = {} # {peer_id: player_info}
 var player_info: Dictionary = {"name": "Name"}
 
 
@@ -94,7 +94,7 @@ func _on_peer_disconnected(id: int) -> void:
 	if not multiplayer.is_server():
 		return
 
-	# Player crashed or lost connection (not graceful)
+	# DeatchmatchPlayer crashed or lost connection (not graceful)
 	if players.has(id):
 		var info = players[id]
 		players.erase(id)
@@ -137,7 +137,7 @@ func _register_player(info: Dictionary) -> void:
 
 	# Tell the NEW client about ALL existing players
 	for existing_id in players.keys():
-		if existing_id != peer_id:  # Don't send them their own info again
+		if existing_id != peer_id: # Don't send them their own info again
 			_player_joined_broadcast.rpc_id(peer_id, existing_id, players[existing_id])
 
 

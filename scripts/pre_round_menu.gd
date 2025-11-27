@@ -13,7 +13,6 @@ extends MenuBase
 func _process(delta: float) -> void:
 	countdown_label.text = str(int(timer.time_left))
 
-
 func _ready() -> void:
 	timer.timeout.connect(_on_countdown_ends)
 	waiting_label.visible = not Lobby.is_host()
@@ -40,6 +39,5 @@ func open():
 
 func _on_countdown_ends() -> void:
 	if Lobby.is_host():
-		SceneManager.change_scene_multiplayer(SceneManager.Scene.GAME)
-	GameManager.change_state(Globals.GameState.IN_ROUND)
+		SceneManager.change_scene_multiplayer(SceneManager.Scene.DEATHMATCH)
 	close()

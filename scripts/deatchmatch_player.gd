@@ -1,4 +1,4 @@
-class_name Player
+class_name DeathmatchPlayer
 extends RigidBody2D
 
 @export var player_stat: PlayerStat
@@ -25,6 +25,9 @@ var knockback_time = 0.0
 
 
 func _ready() -> void:
+	# Ensure all child nodes are ready before accessing them
+	await get_tree().process_frame
+	
 	linear_damp = 3.0 # Acts like air resistance/friction
 	if multiplayer.is_server():
 		player_health.died.connect(_on_died)
@@ -66,10 +69,15 @@ func _physics_process(delta: float) -> void:
 
 func _on_died():
 	if multiplayer.is_server():
+		# Notify the game mode using duck typing
+		var mode = GameManager.current_mode
+		if mode and mode.has_method("on_player_eliminated"):
+			mode.on_player_eliminated(player_id)
+		
 		remove_player.rpc()
-		GameManager.kill_player(player_id)
+	
 	if input.is_multiplayer_authority():
-		#maybe lose screen or spectator etc. these will be local changes
+		# Maybe lose screen or spectator etc. These will be local changes
 		pass
 	
 @rpc("any_peer", "call_local", "reliable")

@@ -18,7 +18,7 @@ func _ready():
 func _on_player_joined(peer_id: int, player_info: Dictionary):
 	# Only show for OTHER players joining
 	if peer_id != Lobby.get_local_peer_id():
-		show_notification("%s joined" % player_info.get("name", "Player"))
+		show_notification("%s joined" % player_info.get("name", "DeatchmatchPlayer"))
 
 	# Update connection status
 	if Lobby.is_in_lobby():
@@ -26,7 +26,7 @@ func _on_player_joined(peer_id: int, player_info: Dictionary):
 
 
 func _on_player_left(peer_id: int, player_info: Dictionary):
-	show_notification("%s left" % player_info.get("name", "Player"))
+	show_notification("%s left" % player_info.get("name", "DeatchmatchPlayer"))
 
 	if Lobby.is_in_lobby():
 		connection_status.text = "Players: %d" % Lobby.players.size()

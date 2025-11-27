@@ -1,9 +1,8 @@
-
 class_name PlayerInput
 extends Node2D
 
-@export var direction: Vector2 = Vector2.ZERO  # Synced
-@export var jump_count: int = 0  # Synced
+@export var direction: Vector2 = Vector2.ZERO # Synced
+@export var jump_count: int = 0 # Synced
 @export var max_jump: int = 2
 
 var _jump_requested: bool = false
@@ -19,6 +18,9 @@ var _current_cooldown: float = 0.0
 @onready var sync: MultiplayerSynchronizer = $InputSynchronizer
 
 func _ready() -> void:
+	# Wait for the synchronizer to be ready in multiplayer scenarios
+	if not has_node("InputSynchronizer"):
+		await get_tree().process_frame
 	set_process(sync.is_multiplayer_authority())
 
 func _process(_delta: float) -> void:
@@ -113,7 +115,7 @@ func increase_jump_count():
 		jump_count += 1
 
 # === Cooldown ===
-func set_cooldown(duration: float): 
+func set_cooldown(duration: float):
 	_cooldown_duration = duration
 
 func reset_current_cooldown():
