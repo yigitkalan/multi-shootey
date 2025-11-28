@@ -30,7 +30,7 @@ func is_host() -> bool:
 	# Without this check, is_server() returns true even in offline mode
 	return (
 		is_in_lobby()
-		and Lobby.is_host()
+		and multiplayer.is_server()
 	)
 
 

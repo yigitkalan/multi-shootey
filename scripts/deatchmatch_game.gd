@@ -26,7 +26,7 @@ func spawn_existing_players() -> void:
 
 
 func _on_lobby_player_joined(peer_id: int, _player_info: Dictionary) -> void:
-	if not Lobby.is_host():
+	if not Lobby.is_host() or GameManager.current_state != Globals.GameState.IN_ROUND or GameManager.current_state != Globals.GameState.PRE_ROUND:
 		return
 	await get_tree().create_timer(0.5).timeout
 	if not spawned_players.has(peer_id):
