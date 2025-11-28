@@ -14,16 +14,23 @@ var level_spawner: MultiplayerSpawner = null
 
 
 func _ready():
-	await get_tree().process_frame
 	scene_container = get_node("/root/Multiplayer/SceneContainer")
 	level_spawner = get_node("/root/Multiplayer/LevelSpawner")
 	level_spawner.spawned.connect(_on_spawned)
 	Lobby.server_closed.connect(reset_current)
 	Lobby.player_joined.connect(_on_player_joined)
+	GameManager.state_changed.connect(_on_game_state_changed)
 
+
+func _on_game_state_changed(state: Globals.GameState):
+	if not Lobby.is_host():
+		return
+	match state:
+		Globals.GameState.IN_ROUND:
+			change_scene_multiplayer(Scene.DEATHMATCH)
 
 func change_scene(scene: Scene):
-	_load_scene.call_deferred(scene)
+	_load_scene.call_deferred(scene) # func change_scene(scene: Scene):
 
 
 func change_scene_multiplayer(scene: Scene):
@@ -43,7 +50,7 @@ func _on_spawned(level: Node) -> void:
 
 
 func _on_player_joined(peer_id: int, player_info: Dictionary):
-	if !multiplayer.is_server():
+	if !Lobby.is_host():
 		return
 	set_current_scene.rpc_id(peer_id, current_scene)
 

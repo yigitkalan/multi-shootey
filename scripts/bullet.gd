@@ -19,12 +19,12 @@ func _ready() -> void:
 	
 	_set_area_radius(explosion_area, bullet_stat.explosion_range)
 	
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		timer.timeout.connect(_destroy_bullet_with_time)
 		body_entered.connect(_destroy_bullet_with_target)
 	
 func _destroy_bullet_with_time():
-	if !multiplayer.is_server():
+	if !Lobby.is_host():
 		return
 	_destroy_rpc.rpc()
 	
@@ -52,7 +52,7 @@ func _destroy_bullet_with_target(target: Node):
 		player.apply_knockback(_calculate_hitback_force(player))
 	
 	timer.stop()
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		_destroy_rpc.rpc()
 
 func set_velocity(velocity: Vector2):
@@ -93,5 +93,5 @@ func _fade_and_destroy() -> void:
 	
 	# Only server destroys the object
 	# Clients wait for replication to remove it
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		tween.tween_callback(queue_free.call_deferred)

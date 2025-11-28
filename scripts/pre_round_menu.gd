@@ -15,10 +15,6 @@ func _process(delta: float) -> void:
 
 func _ready() -> void:
 	timer.timeout.connect(_on_countdown_ends)
-	waiting_label.visible = not Lobby.is_host()
-	if Lobby.is_host():
-		start_button.visible = true
-		start_button.pressed.connect(initalize_countdown.rpc)
 
 
 @rpc("authority", "call_local", "reliable")
@@ -36,8 +32,16 @@ func open():
 	countdown_label.visible = false
 	start_button.visible = Lobby.is_host()
 	waiting_label.visible = not Lobby.is_host()
+	if Lobby.is_host():
+		start_button.pressed.connect(initalize_countdown.rpc)
+	
+func close():
+	super ()
+	# Only disconnect if we're the host (signal was only connected on host)
+	if Lobby.is_host() and start_button.pressed.is_connected(initalize_countdown.rpc):
+		start_button.pressed.disconnect(initalize_countdown.rpc)
 
 func _on_countdown_ends() -> void:
 	if Lobby.is_host():
-		SceneManager.change_scene_multiplayer(SceneManager.Scene.DEATHMATCH)
+		GameManager.change_state(Globals.GameState.IN_ROUND)
 	close()

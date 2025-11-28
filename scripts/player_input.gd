@@ -18,9 +18,6 @@ var _current_cooldown: float = 0.0
 @onready var sync: MultiplayerSynchronizer = $InputSynchronizer
 
 func _ready() -> void:
-	# Wait for the synchronizer to be ready in multiplayer scenarios
-	if not has_node("InputSynchronizer"):
-		await get_tree().process_frame
 	set_process(sync.is_multiplayer_authority())
 
 func _process(_delta: float) -> void:
@@ -38,12 +35,12 @@ func _process(_delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	# Server manages cooldown
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		_current_cooldown = max(0.0, _current_cooldown - delta)
 
 # === Charging ===
 func _start_charge() -> void:
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		_is_charging = true
 		_charge_start_time = Time.get_ticks_msec() / 1000.0
 	else:
@@ -67,7 +64,7 @@ func reset_shot_gauge():
 
 # === Shooting ===
 func _request_shoot() -> void:
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		_shoot_requested = true
 	else:
 		_request_shoot_rpc.rpc_id(1, _mouse_position)
@@ -87,7 +84,7 @@ func get_click_pos() -> Vector2:
 
 # === Jumping ===
 func _request_jump() -> void:
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		_jump_requested = true
 	else:
 		_request_jump_rpc.rpc_id(1)
@@ -102,16 +99,16 @@ func consume_jump() -> bool:
 	return result
 
 func can_double_jump() -> bool:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return false
 	return jump_count < max_jump
 
 func reset_jump_count():
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		jump_count = 0
 
 func increase_jump_count():
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		jump_count += 1
 
 # === Cooldown ===
@@ -119,7 +116,7 @@ func set_cooldown(duration: float):
 	_cooldown_duration = duration
 
 func reset_current_cooldown():
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		_current_cooldown = _cooldown_duration
 
 func is_on_cooldown() -> bool:

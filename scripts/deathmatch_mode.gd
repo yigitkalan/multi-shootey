@@ -15,7 +15,7 @@ func on_round_end() -> void:
 
 # Custom method - called by player when they die
 func on_player_eliminated(player_id: int) -> void:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 		
 	alive_players.erase(player_id)

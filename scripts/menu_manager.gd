@@ -12,6 +12,7 @@ var current_menu: MenuBase
 
 func _ready() -> void:
 	initialize()
+	GameManager.state_changed.connect(_on_game_state_changed)
 
 
 # scan inside the uiLayer for all MenuBase nodes and store them in the menus dictionary
@@ -31,6 +32,19 @@ func initialize(ui_layer: Node = null) -> void:
 
 func open_initial():
 	show_menu(initial_menu)
+
+func _on_game_state_changed(state: Globals.GameState) -> void:
+	match state:
+		Globals.GameState.PRE_ROUND:
+			show_menu(Globals.MenuName.PRE_ROUND)
+		Globals.GameState.IN_ROUND:
+			pass
+		Globals.GameState.POST_ROUND:
+			pass
+			# show_menu(Globals.MenuName.POST_ROUND)
+		Globals.GameState.GAME_OVER:
+			pass
+			# show_menu(Globals.MenuName.GAME_OVER)
 
 
 @rpc("authority", "call_local", "reliable")

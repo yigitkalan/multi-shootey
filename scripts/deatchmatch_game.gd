@@ -17,7 +17,7 @@ func _ready() -> void:
 	Lobby.player_joined.connect(_on_lobby_player_joined)
 	Lobby.player_left.connect(_on_lobby_player_left)
 	
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		spawn_existing_players()
 
 func spawn_existing_players() -> void:
@@ -26,7 +26,7 @@ func spawn_existing_players() -> void:
 
 
 func _on_lobby_player_joined(peer_id: int, _player_info: Dictionary) -> void:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 	await get_tree().create_timer(0.5).timeout
 	if not spawned_players.has(peer_id):
@@ -34,7 +34,7 @@ func _on_lobby_player_joined(peer_id: int, _player_info: Dictionary) -> void:
 
 
 func _on_lobby_player_left(peer_id: int, _player_info: Dictionary) -> void:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 	if spawned_players.has(peer_id):
 		var player_node = spawned_players[peer_id]
@@ -48,7 +48,7 @@ func _on_lobby_player_left(peer_id: int, _player_info: Dictionary) -> void:
 
 
 func spawn_player_for_peer(peer_id: int) -> void:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 	if spawned_players.has(peer_id):
 		return

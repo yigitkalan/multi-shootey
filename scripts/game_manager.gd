@@ -38,7 +38,7 @@ func set_active_mode(mode: GameMode) -> void:
 
 
 func change_state(new_state: Globals.GameState) -> void:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 		
 	current_state = new_state
@@ -68,7 +68,7 @@ func _on_state_entered(state: Globals.GameState) -> void:
 				current_mode.on_round_end()
 			
 			# Auto-transition to next round after delay (if not max rounds)
-			if multiplayer.is_server():
+			if Lobby.is_host():
 				await get_tree().create_timer(5.0).timeout
 				if round_number >= max_rounds:
 					change_state(Globals.GameState.GAME_OVER)
@@ -85,7 +85,7 @@ func _award_points(winner_ids: Array[int]) -> void:
 
 func _on_mode_round_end() -> void:
 	# Mode signaled that round should end
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		change_state(Globals.GameState.POST_ROUND)
 
 

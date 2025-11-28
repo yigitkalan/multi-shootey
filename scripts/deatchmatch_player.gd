@@ -25,11 +25,8 @@ var knockback_time = 0.0
 
 
 func _ready() -> void:
-	# Ensure all child nodes are ready before accessing them
-	await get_tree().process_frame
-	
 	linear_damp = 3.0 # Acts like air resistance/friction
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		player_health.died.connect(_on_died)
 		shooter.shot.connect(apply_knockback)
 	player_health.took_damage.connect(health_bar.update_bar)
@@ -39,7 +36,7 @@ func _process(delta: float) -> void:
 	knockback_time = max(knockback_time - delta, 0)
 
 func _physics_process(delta: float) -> void:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 	
 	var on_floor = ground_check.is_colliding()
@@ -68,7 +65,7 @@ func _physics_process(delta: float) -> void:
 		apply_central_force(Vector2(-linear_velocity.x * player_stat.movement_force, 0))
 
 func _on_died():
-	if multiplayer.is_server():
+	if Lobby.is_host():
 		# Notify the game mode using duck typing
 		var mode = GameManager.current_mode
 		if mode and mode.has_method("on_player_eliminated"):

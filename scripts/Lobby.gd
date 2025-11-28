@@ -26,7 +26,12 @@ func _ready():
 
 
 func is_host() -> bool:
-	return multiplayer.is_server()
+	# Check if we're actually in a multiplayer session AND we're the server
+	# Without this check, is_server() returns true even in offline mode
+	return (
+		is_in_lobby()
+		and Lobby.is_host()
+	)
 
 
 func is_in_lobby() -> bool:
@@ -91,7 +96,7 @@ func leave_lobby():
 
 func _on_peer_disconnected(id: int) -> void:
 	# Only server handles disconnections
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 
 	# DeatchmatchPlayer crashed or lost connection (not graceful)
@@ -123,7 +128,7 @@ func _on_server_disconnected() -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func _register_player(info: Dictionary) -> void:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 
 	var peer_id := multiplayer.get_remote_sender_id()
@@ -155,7 +160,7 @@ func _player_left_broadcast(peer_id: int, info: Dictionary) -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func _client_leaving(info: Dictionary) -> void:
-	if not multiplayer.is_server():
+	if not Lobby.is_host():
 		return
 
 	var peer_id := multiplayer.get_remote_sender_id()

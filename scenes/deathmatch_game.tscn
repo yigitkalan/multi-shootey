@@ -31,6 +31,7 @@ position = Vector2(472, 281)
 [node name="Players" type="Node" parent="."]
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://b2xyd22qyvitu")
 spawn_path = NodePath("../Players")
 
 [node name="Grounds" type="Node" parent="."]

@@ -12,11 +12,8 @@ signal shot(knockback_force: Vector2)
 const BULLET_SCENE = preload("uid://ssa5260nc2ff")
 
 func _ready() -> void:
-	# Ensure all child nodes are ready before accessing them
-	await get_tree().process_frame
-	
 	# Only server processes shooting logic
-	set_process(multiplayer.is_server())
+	set_process(Lobby.is_host())
 	player_input.set_cooldown(shooter_stat.cooldown)
 
 func _process(_delta: float) -> void:
