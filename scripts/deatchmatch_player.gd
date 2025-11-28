@@ -26,11 +26,11 @@ var knockback_time = 0.0
 
 func _ready() -> void:
 	linear_damp = 3.0 # Acts like air resistance/friction
+	player_health.took_damage.connect(health_bar.update_bar)
+	lock_rotation = true
 	if Lobby.is_host():
 		player_health.died.connect(_on_died)
 		shooter.shot.connect(apply_knockback)
-	player_health.took_damage.connect(health_bar.update_bar)
-	lock_rotation = true
 
 func _process(delta: float) -> void:
 	knockback_time = max(knockback_time - delta, 0)
@@ -66,11 +66,12 @@ func _physics_process(delta: float) -> void:
 
 func _on_died():
 	if Lobby.is_host():
-		# Notify the game mode using duck typing
-		var mode = GameManager.current_mode
-		if mode and mode.has_method("on_player_eliminated"):
-			mode.on_player_eliminated(player_id)
-		
+		# Notify the game mode 
+		var mode = GameManager.current_mode as DeathmatchMode
+		if not mode:
+			push_error("This player doesn't belong here")
+			return
+		mode.on_player_eliminated(player_id)
 		remove_player.rpc()
 	
 	if input.is_multiplayer_authority():

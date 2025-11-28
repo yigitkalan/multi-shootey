@@ -26,8 +26,16 @@ func spawn_existing_players() -> void:
 
 
 func _on_lobby_player_joined(peer_id: int, _player_info: Dictionary) -> void:
-	if not Lobby.is_host() or GameManager.current_state != Globals.GameState.IN_ROUND or GameManager.current_state != Globals.GameState.PRE_ROUND:
+	if (
+		not Lobby.is_host()
+		or (
+			GameManager.current_state != Globals.GameState.IN_ROUND
+			and GameManager.current_state != Globals.GameState.PRE_ROUND
+		)
+		):
 		return
+	# Initialize player score
+	GameManager.init_player_score(peer_id)
 	await get_tree().create_timer(0.5).timeout
 	if not spawned_players.has(peer_id):
 		spawn_player_for_peer(peer_id)
@@ -67,7 +75,7 @@ func spawn_player_for_peer(peer_id: int) -> void:
 	$Players.add_child(player, true)
 
 	spawned_players[peer_id] = player
-	
+
 	# Initialize player score
 	GameManager.init_player_score(peer_id)
 	
