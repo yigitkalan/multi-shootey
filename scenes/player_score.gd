@@ -1,3 +1,4 @@
+class_name PlayerScore
 extends HBoxContainer
 
 

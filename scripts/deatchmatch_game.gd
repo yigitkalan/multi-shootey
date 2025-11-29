@@ -3,6 +3,7 @@ extends Node2D
 const PLAYER_SCENE := preload("uid://b2xyd22qyvitu")
 @onready var spawn_points: Array = $SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
+
 # Mode is now created dynamically
 var game_mode: DeathmatchMode
 
@@ -29,6 +30,42 @@ func _ready() -> void:
 	
 	if Lobby.is_host():
 		spawn_existing_players()
+
+
+#This is crucial for graceful exit
+func clean_spawned_entites() -> void:
+	"""Complete cleanup of all spawned entities before scene destruction"""
+	if spawned_players.size() == 0:
+		return
+	
+	print("Starting cleanup of %d players and their bullets..." % spawned_players.size())
+	
+	# Step 1: Clean up bullets first (they're children of players)
+	for player_node in spawned_players.values():
+		if not is_instance_valid(player_node):
+			continue
+		
+		var bullet_spawner = player_node.get_node_or_null("BulletSpawner")
+		if bullet_spawner:
+			for bullet in bullet_spawner.get_children():
+				if is_instance_valid(bullet):
+					bullet.queue_free()
+	
+	# Wait for bullets to be despawned
+	await get_tree().create_timer(0.2).timeout
+	
+	# Step 2: Clean up players
+	var players_to_remove = spawned_players.values()
+	for player_node in players_to_remove:
+		if is_instance_valid(player_node):
+			player_node.queue_free()
+	
+	# Wait for players to be despawned
+	await get_tree().create_timer(0.2).timeout
+	
+	spawned_players.clear()
+	print("Cleanup complete!")
+
 
 func spawn_existing_players() -> void:
 	for peer_id in Lobby.players.keys():

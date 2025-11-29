@@ -40,8 +40,7 @@ func _on_game_state_changed(state: Globals.GameState) -> void:
 		Globals.GameState.IN_ROUND:
 			pass
 		Globals.GameState.POST_ROUND:
-			pass
-			# show_menu(Globals.MenuName.POST_ROUND)
+			show_menu(Globals.MenuName.POST_ROUND)
 		Globals.GameState.GAME_OVER:
 			pass
 			# show_menu(Globals.MenuName.GAME_OVER)

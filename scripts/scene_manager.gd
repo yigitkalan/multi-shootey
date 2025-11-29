@@ -28,6 +28,12 @@ func _on_game_state_changed(state: Globals.GameState):
 	match state:
 		Globals.GameState.IN_ROUND:
 			change_scene_multiplayer(Scene.DEATHMATCH)
+		Globals.GameState.POST_ROUND:
+			# Call cleanup on the game scene BEFORE destroying it
+			if _current_scene_node and _current_scene_node.has_method("cleanup_everything"):
+				await _current_scene_node.cleanup_everything()
+			# Now clear the scene
+			clear_scene()
 
 func change_scene(scene: Scene):
 	_load_scene.call_deferred(scene) # func change_scene(scene: Scene):
@@ -38,6 +44,15 @@ func change_scene_multiplayer(scene: Scene):
 		push_error("Only host can change scenes!")
 		return
 	_load_scene.call_deferred(scene)
+
+func clear_scene():
+	if !Lobby.is_host():
+		push_error("Only host can clear scenes!")
+		return
+	if _current_scene_node:
+		_current_scene_node.queue_free()
+		await _current_scene_node.tree_exited
+		set_current_scene.rpc(Scene.NONE)
 
 
 @rpc("authority", "call_local", "reliable")

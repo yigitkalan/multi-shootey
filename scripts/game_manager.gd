@@ -1,7 +1,8 @@
 extends Node
 
 # State management
-var current_state: Globals.GameState = Globals.GameState.LOBBY
+var current_state: Globals.GameState = Globals.GameState.NONE
+var previous_state: Globals.GameState = Globals.GameState.NONE
 var round_number: int = 0
 var max_rounds: int = 3
 
@@ -9,7 +10,7 @@ var max_rounds: int = 3
 var current_mode: GameMode = null
 
 # Score tracking (persists across rounds)
-var player_scores: Dictionary = {}
+var player_scores: Dictionary[int, int] = {}
 
 # Signals
 signal state_changed(new_state: Globals.GameState)
@@ -41,14 +42,14 @@ func change_state(new_state: Globals.GameState) -> void:
 	if not multiplayer.is_server():
 		return
 		
-	current_state = new_state
-	_sync_state.rpc(new_state)
+	_sync_state.rpc(new_state, previous_state)
 	_on_state_entered(new_state)
 
 
 @rpc("authority", "call_local", "reliable")
-func _sync_state(new_state: Globals.GameState) -> void:
+func _sync_state(new_state: Globals.GameState, old_state: Globals.GameState) -> void:
 	current_state = new_state
+	previous_state = old_state
 	state_changed.emit(new_state)
 
 
@@ -61,17 +62,9 @@ func _on_state_entered(state: Globals.GameState) -> void:
 			if current_mode:
 				current_mode.on_round_start()
 		Globals.GameState.POST_ROUND:
+			# Score collection now happens in _on_mode_round_end BEFORE state change
+			# Call on_round_end on mode if it still exists
 			if current_mode:
-				var winner_ids = current_mode.get_winner_ids()
-				
-				# Get score updates from mode
-				var score_updates = current_mode.get_round_score_updates()
-				for player_id in score_updates:
-					if not player_scores.has(player_id):
-						player_scores[player_id] = 0
-					player_scores[player_id] += score_updates[player_id]
-					
-				round_ended.emit(winner_ids)
 				current_mode.on_round_end()
 			
 			# Auto-transition to next round after delay (if not max rounds)
@@ -86,6 +79,21 @@ func _on_state_entered(state: Globals.GameState) -> void:
 func _on_mode_round_end() -> void:
 	# Mode signaled that round should end
 	if multiplayer.is_server():
+		# Collect score updates BEFORE state change (which destroys the scene/mode)
+		if current_mode:
+			var winner_ids = current_mode.get_winner_ids()
+			var score_updates = current_mode.get_round_score_updates()
+			
+			# Update player scores
+			for player_id in score_updates:
+				if not player_scores.has(player_id):
+					player_scores[player_id] = 0
+				player_scores[player_id] += score_updates[player_id]
+			
+			# Emit round ended with winners
+			round_ended.emit(winner_ids)
+		
+		# Now change state (this will trigger scene destruction)
 		change_state(Globals.GameState.POST_ROUND)
 
 
