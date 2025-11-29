@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://d0wig0rls33eu"]
+[gd_scene load_steps=5 format=3 uid="uid://d0wig0rls33eu"]
 
 [ext_resource type="Script" uid="uid://chfvtjwfm4n2k" path="res://scripts/deatchmatch_game.gd" id="1_vdydl"]
-[ext_resource type="Script" uid="uid://dyutfjvhg73dk" path="res://scripts/deathmatch_mode.gd" id="2_pxvna"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uwrxv"]
 size = Vector2(160, 18)
@@ -97,7 +96,3 @@ shape = SubResource("RectangleShape2D_uwrxv")
 [node name="Sprite2D" type="Sprite2D" parent="Grounds/Island3"]
 scale = Vector2(2.5027564, 0.27400684)
 texture = SubResource("GradientTexture2D_lnu2h")
-
-[node name="DeathmatchMode" type="Node" parent="."]
-script = ExtResource("2_pxvna")
-metadata/_custom_type_script = "uid://dyutfjvhg73dk"

@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://ew3aj6tum3yo"]
+
+[ext_resource type="Script" uid="uid://cal5l1iu2glx4" path="res://scenes/player_score.gd" id="1_qosfy"]
+
+[node name="PlayerScore" type="HBoxContainer"]
+script = ExtResource("1_qosfy")
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+text = "Name"
+
+[node name="Space" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Score" type="Label" parent="."]
+layout_mode = 2
+text = "2"

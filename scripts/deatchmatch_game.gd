@@ -3,13 +3,23 @@ extends Node2D
 const PLAYER_SCENE := preload("uid://b2xyd22qyvitu")
 @onready var spawn_points: Array = $SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
-@onready var game_mode: DeathmatchMode = $DeathmatchMode
+# Mode is now created dynamically
+var game_mode: DeathmatchMode
 
 var spawned_players := {}
 
 
 func _ready() -> void:
 	await get_tree().process_frame
+	
+	# Create and setup mode
+	# We create it on all peers so they have the local instance to query state from
+	# In a real networked scenario, we might want to spawn this via MultiplayerSpawner
+	# if we want to sync its state automatically, but for now we mirror the previous
+	# behavior where the node existed on all clients.
+	game_mode = DeathmatchMode.new()
+	game_mode.name = "DeathmatchMode"
+	add_child(game_mode)
 	
 	GameManager.set_active_mode(game_mode)
 	

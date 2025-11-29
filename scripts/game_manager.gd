@@ -38,7 +38,7 @@ func set_active_mode(mode: GameMode) -> void:
 
 
 func change_state(new_state: Globals.GameState) -> void:
-	if not Lobby.is_host():
+	if not multiplayer.is_server():
 		return
 		
 	current_state = new_state
@@ -63,7 +63,14 @@ func _on_state_entered(state: Globals.GameState) -> void:
 		Globals.GameState.POST_ROUND:
 			if current_mode:
 				var winner_ids = current_mode.get_winner_ids()
-				_award_points(winner_ids)
+				
+				# Get score updates from mode
+				var score_updates = current_mode.get_round_score_updates()
+				for player_id in score_updates:
+					if not player_scores.has(player_id):
+						player_scores[player_id] = 0
+					player_scores[player_id] += score_updates[player_id]
+					
 				round_ended.emit(winner_ids)
 				current_mode.on_round_end()
 			
@@ -76,16 +83,9 @@ func _on_state_entered(state: Globals.GameState) -> void:
 					change_state(Globals.GameState.PRE_ROUND)
 
 
-func _award_points(winner_ids: Array[int]) -> void:
-	for winner_id in winner_ids:
-		if not player_scores.has(winner_id):
-			player_scores[winner_id] = 0
-		player_scores[winner_id] += 1
-
-
 func _on_mode_round_end() -> void:
 	# Mode signaled that round should end
-	if Lobby.is_host():
+	if multiplayer.is_server():
 		change_state(Globals.GameState.POST_ROUND)
 
 

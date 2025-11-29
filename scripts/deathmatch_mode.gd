@@ -44,3 +44,11 @@ func get_mode_data() -> Dictionary:
 		"alive_count": alive_players.size(),
 		"total_players": alive_players.size()
 	}
+
+
+func get_round_score_updates() -> Dictionary:
+	var updates = {}
+	# If there is exactly one winner, they get 1 point
+	if alive_players.size() == 1:
+		updates[alive_players[0]] = 1
+	return updates

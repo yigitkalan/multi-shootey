@@ -16,6 +16,11 @@ func get_mode_data() -> Dictionary:
     return {}
 
 
+func get_round_score_updates() -> Dictionary:
+    """Returns a dictionary of player_id: score_change for the current round"""
+    return {}
+
+
 # === LIFECYCLE HOOKS (Optional overrides) ===
 func on_round_start() -> void: pass
 func on_round_end() -> void: pass
