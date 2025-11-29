@@ -36,7 +36,7 @@ func _on_start_pressed():
 	if not Lobby.is_host():
 		return
 	MenuManager.hide_all_menus.rpc()
-	GameManager.change_state(Globals.GameState.PRE_ROUND)
+	GameManager.change_state_multiplayer(Globals.GameState.PRE_ROUND)
 
 
 func open():

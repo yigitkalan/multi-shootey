@@ -27,7 +27,7 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		_request_jump()
 		
-	if Input.is_action_just_pressed("click"):
+	if Input.is_action_just_pressed("click") and not is_on_cooldown():
 		_start_charge()
 		
 	if Input.is_action_just_released("click"):

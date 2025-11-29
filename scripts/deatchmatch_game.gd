@@ -19,6 +19,7 @@ func _ready() -> void:
 	# if we want to sync its state automatically, but for now we mirror the previous
 	# behavior where the node existed on all clients.
 	game_mode = DeathmatchMode.new()
+	game_mode.max_rounds = 2
 	game_mode.name = "DeathmatchMode"
 	add_child(game_mode)
 	

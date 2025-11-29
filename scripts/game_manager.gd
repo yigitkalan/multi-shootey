@@ -33,12 +33,13 @@ func set_active_mode(mode: GameMode) -> void:
 	
 	# Connect new mode
 	current_mode = mode
+	max_rounds = mode.max_rounds
 	if current_mode:
 		current_mode.round_should_end.connect(_on_mode_round_end)
 		current_mode.data_updated.connect(_on_mode_data_updated)
 
 
-func change_state(new_state: Globals.GameState) -> void:
+func change_state_multiplayer(new_state: Globals.GameState) -> void:
 	if not multiplayer.is_server():
 		return
 		
@@ -69,11 +70,10 @@ func _on_state_entered(state: Globals.GameState) -> void:
 			
 			# Auto-transition to next round after delay (if not max rounds)
 			if Lobby.is_host():
-				await get_tree().create_timer(5.0).timeout
 				if round_number >= max_rounds:
-					change_state(Globals.GameState.GAME_OVER)
-				else:
-					change_state(Globals.GameState.PRE_ROUND)
+					change_state_multiplayer(Globals.GameState.GAME_OVER)
+			# 	else:
+			# 		change_state_multiplayer(Globals.GameState.PRE_ROUND)
 
 
 func _on_mode_round_end() -> void:
@@ -94,7 +94,7 @@ func _on_mode_round_end() -> void:
 			round_ended.emit(winner_ids)
 		
 		# Now change state (this will trigger scene destruction)
-		change_state(Globals.GameState.POST_ROUND)
+		change_state_multiplayer(Globals.GameState.POST_ROUND)
 
 
 func _on_mode_data_updated() -> void:

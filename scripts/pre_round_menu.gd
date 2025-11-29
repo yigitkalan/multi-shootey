@@ -30,10 +30,12 @@ func open():
 	super ()
 	starting_label.visible = false
 	countdown_label.visible = false
-	start_button.visible = Lobby.is_host()
+	start_button.visible = Lobby.is_host() and GameManager.previous_state != Globals.GameState.POST_ROUND
 	waiting_label.visible = not Lobby.is_host()
 	if Lobby.is_host():
 		start_button.pressed.connect(initalize_countdown.rpc)
+		if GameManager.previous_state == Globals.GameState.POST_ROUND:
+			initalize_countdown.rpc()
 	
 func close():
 	super ()
@@ -43,5 +45,5 @@ func close():
 
 func _on_countdown_ends() -> void:
 	if Lobby.is_host():
-		GameManager.change_state(Globals.GameState.IN_ROUND)
+		GameManager.change_state_multiplayer(Globals.GameState.IN_ROUND)
 	close()
