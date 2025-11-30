@@ -38,7 +38,7 @@ func _on_game_state_changed(state: Globals.GameState) -> void:
 		Globals.GameState.PRE_ROUND:
 			show_menu(Globals.MenuName.PRE_ROUND)
 		Globals.GameState.IN_ROUND:
-			pass
+			hide_all_menus()
 		Globals.GameState.POST_ROUND:
 			show_menu(Globals.MenuName.POST_ROUND)
 		Globals.GameState.GAME_OVER:

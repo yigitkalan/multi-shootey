@@ -28,6 +28,7 @@ func _on_game_state_changed(state: Globals.GameState):
 	match state:
 		Globals.GameState.IN_ROUND:
 			change_scene_multiplayer(Scene.DEATHMATCH)
+
 		Globals.GameState.POST_ROUND:
 			# Call cleanup on the game scene BEFORE destroying it
 			if _current_scene_node and _current_scene_node.has_method("clean_spawned_entites"):
