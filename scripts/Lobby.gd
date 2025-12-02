@@ -72,7 +72,9 @@ func join_game(address: String = "") -> int:
 	return OK
 
 func get_player_name(peer_id: int) -> String:
-	return players[peer_id]["name"]
+	if players.has(peer_id):
+		return players[peer_id]["name"]
+	return "Unknown"
 
 func leave_lobby():
 	if not is_in_lobby():
