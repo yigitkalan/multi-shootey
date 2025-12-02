@@ -4,6 +4,8 @@ const PLAYER_SCENE := preload("uid://b2xyd22qyvitu")
 @onready var spawn_points: Array = $SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
 
+@export var max_rounds: int = 3
+
 # Mode is now created dynamically
 var game_mode: DeathmatchMode
 
@@ -19,11 +21,11 @@ func _ready() -> void:
 	# if we want to sync its state automatically, but for now we mirror the previous
 	# behavior where the node existed on all clients.
 	game_mode = DeathmatchMode.new()
-	game_mode.max_rounds = 2
 	game_mode.name = "DeathmatchMode"
 	add_child(game_mode)
 	
 	GameManager.set_active_mode(game_mode)
+	GameManager.set_max_rounds(max_rounds)
 	
 	# Connect signals
 	Lobby.player_joined.connect(_on_lobby_player_joined)

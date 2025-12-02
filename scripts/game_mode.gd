@@ -2,8 +2,6 @@ class_name GameMode
 extends Node
 
 
-@export var max_rounds: int = 1
-
 # === SIGNALS (How modes communicate) ===
 signal round_should_end # Emitted when win condition met
 signal data_updated # Emitted when UI data changes (scores, etc.)

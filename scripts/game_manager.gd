@@ -33,10 +33,12 @@ func set_active_mode(mode: GameMode) -> void:
 	
 	# Connect new mode
 	current_mode = mode
-	max_rounds = mode.max_rounds
 	if current_mode:
 		current_mode.round_should_end.connect(_on_mode_round_end)
 		current_mode.data_updated.connect(_on_mode_data_updated)
+
+func set_max_rounds(num: int) -> void:
+	max_rounds = num
 
 
 func change_state_multiplayer(new_state: Globals.GameState) -> void:
