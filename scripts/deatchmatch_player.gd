@@ -8,7 +8,7 @@ extends RigidBody2D
 @onready var player_health: PlayerHealth = $PlayerHealth
 @onready var shooter: Shooter = $Shooter
 @onready var health_bar: HealthBar = $HealthBar
-
+@onready var camera_2d: Camera2D = $Camera2D
 
 var knockback_time = 0.0
 
@@ -28,6 +28,7 @@ func _ready() -> void:
 	linear_damp = 3.0 # Acts like air resistance/friction
 	player_health.took_damage.connect(health_bar.update_bar)
 	lock_rotation = true
+	camera_2d.enabled = Lobby.get_local_peer_id() == player_id
 	if Lobby.is_host():
 		player_health.died.connect(_on_died)
 		shooter.shot.connect(apply_knockback)

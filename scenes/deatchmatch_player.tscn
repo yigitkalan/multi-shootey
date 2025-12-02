@@ -125,3 +125,5 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_fjrip")
 value = 100.0
 show_percentage = false
 script = ExtResource("8_8xlop")
+
+[node name="Camera2D" type="Camera2D" parent="."]
