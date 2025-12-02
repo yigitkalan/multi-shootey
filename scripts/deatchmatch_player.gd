@@ -10,6 +10,9 @@ extends RigidBody2D
 @onready var health_bar: HealthBar = $HealthBar
 @onready var camera_2d: Camera2D = $Camera2D
 
+@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
+@onready var input_synchronizer: MultiplayerSynchronizer = $PlayerInput/InputSynchronizer
+
 var knockback_time = 0.0
 
 
@@ -68,6 +71,7 @@ func _physics_process(delta: float) -> void:
 func _on_died():
 	if Lobby.is_host():
 		# Notify the game mode 
+		_stop_synchronizers()
 		var mode = GameManager.current_mode as DeathmatchMode
 		if not mode:
 			push_error("This player doesn't belong here")
@@ -78,7 +82,11 @@ func _on_died():
 	if input.is_multiplayer_authority():
 		# Maybe lose screen or spectator etc. These will be local changes
 		pass
-	
+
+func _stop_synchronizers():
+	multiplayer_synchronizer.public_visibility = false
+	input_synchronizer.public_visibility = false
+
 @rpc("any_peer", "call_local", "reliable")
 func remove_player():
 	set_physics_process(false)

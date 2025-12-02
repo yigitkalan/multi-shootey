@@ -84,11 +84,12 @@ shape = SubResource("RectangleShape2D_qhqgy")
 _spawnable_scenes = PackedStringArray("uid://ssa5260nc2ff")
 spawn_path = NodePath(".")
 
-[node name="Shooter" type="Node2D" parent="."]
+[node name="Shooter" type="Node2D" parent="." node_paths=PackedStringArray("collision_exception")]
 rotation = 0.011181319
 scale = Vector2(0.99999994, 0.99999994)
 script = ExtResource("3_jwoyo")
 shooter_stat = SubResource("Resource_smehm")
+collision_exception = NodePath("..")
 
 [node name="ShootingPoint" type="Marker2D" parent="Shooter"]
 position = Vector2(29.998123, -0.3354326)

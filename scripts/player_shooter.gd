@@ -4,6 +4,7 @@ extends Node2D
 signal shot(knockback_force: Vector2)
 
 @export var shooter_stat: ShooterStat
+@export var collision_exception: Node
 
 @onready var player_input: PlayerInput = $"../PlayerInput"
 @onready var bullet_spawner: MultiplayerSpawner = $"../BulletSpawner"
@@ -50,6 +51,7 @@ func _spawn_bullet(bullet_dir: Vector2, shot_power: float) -> void:
 	bullet.global_position = shooting_point.global_position
 	bullet.set_velocity(bullet_dir * bullet.bullet_stat.velocity)
 	bullet.set_bullet_multiplier(shot_power)
+	bullet.add_collision_exception_with(collision_exception)
 	bullet_spawner.add_child(bullet, true)
 
 func _calculate_bullet_dir(target_pos: Vector2) -> Vector2:
