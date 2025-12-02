@@ -19,8 +19,7 @@ signal mode_data_changed(data: Dictionary)
 
 
 func _ready() -> void:
-	# Will be set by the game scene when it loads
-	pass
+	Lobby.player_joined.connect(_on_lobby_player_joined)
 
 
 func set_active_mode(mode: GameMode) -> void:
@@ -40,6 +39,9 @@ func set_active_mode(mode: GameMode) -> void:
 func set_max_rounds(num: int) -> void:
 	max_rounds = num
 
+func _on_lobby_player_joined(peer_id: int, _player_info: Dictionary) -> void:
+	if Lobby.is_host() and peer_id != 1:
+		_sync_full_state_to_client(peer_id)
 
 func change_state_multiplayer(new_state: Globals.GameState) -> void:
 	if not multiplayer.is_server():
@@ -47,6 +49,20 @@ func change_state_multiplayer(new_state: Globals.GameState) -> void:
 		
 	_sync_state.rpc(new_state, previous_state)
 	_on_state_entered(new_state)
+
+
+func _sync_full_state_to_client(peer_id: int) -> void:
+	_receive_full_state.rpc_id(peer_id, current_state, previous_state, round_number, player_scores)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _receive_full_state(new_state: Globals.GameState, old_state: Globals.GameState, round_num: int, scores: Dictionary) -> void:
+	current_state = new_state
+	previous_state = old_state
+	round_number = round_num
+	player_scores = scores
+	
+	state_changed.emit(new_state)
 
 
 @rpc("authority", "call_local", "reliable")
