@@ -3,18 +3,18 @@ extends Node2D
 const PLAYER_SCENE := preload("uid://b2xyd22qyvitu")
 @onready var spawn_points: Array = $SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
-
+@onready var indicator_manager: IndicatorManager = $CanvasLayer/IndicatorManager
 @export var max_rounds: int = 3
+@onready var players: Node = $Players
 
 # Mode is now created dynamically
 var game_mode: DeathmatchMode
 
 var spawned_players := {}
 
-
 func _ready() -> void:
 	await get_tree().process_frame
-	
+
 	# Create and setup mode
 	# We create it on all peers so they have the local instance to query state from
 	# In a real networked scenario, we might want to spawn this via MultiplayerSpawner
@@ -23,13 +23,15 @@ func _ready() -> void:
 	game_mode = DeathmatchMode.new()
 	game_mode.name = "DeathmatchMode"
 	add_child(game_mode)
-	
+
 	GameManager.set_active_mode(game_mode)
 	GameManager.set_max_rounds(max_rounds)
 	
 	# Connect signals
 	Lobby.player_joined.connect(_on_lobby_player_joined)
 	Lobby.player_left.connect(_on_lobby_player_left)
+
+	indicator_manager.player_container = players
 	
 	if Lobby.is_host():
 		spawn_existing_players()
@@ -110,7 +112,8 @@ func spawn_player_for_peer(peer_id: int) -> void:
 		return
 	if spawned_players.has(peer_id):
 		return
-	var player := PLAYER_SCENE.instantiate()
+
+	var player: DeathmatchPlayer = PLAYER_SCENE.instantiate()
 	player.name = str(peer_id) # Name should be the peer_id as string
 
 	# Set position

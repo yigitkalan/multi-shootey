@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://d0wig0rls33eu"]
+[gd_scene load_steps=8 format=3 uid="uid://d0wig0rls33eu"]
 
 [ext_resource type="Script" uid="uid://chfvtjwfm4n2k" path="res://scripts/deatchmatch_game.gd" id="1_vdydl"]
 [ext_resource type="PackedScene" uid="uid://cq3rbjrrywdq3" path="res://scenes/death_area.tscn" id="2_pxvna"]
+[ext_resource type="Script" uid="uid://5dlx4afve45b" path="res://scripts/dm_indicator_manager.gd" id="3_2jpsr"]
+[ext_resource type="PackedScene" uid="uid://gucqnvk78v82" path="res://scenes/dm_player_indicator.tscn" id="4_upwyv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uwrxv"]
 size = Vector2(160, 18)
@@ -149,3 +151,31 @@ texture = SubResource("GradientTexture2D_lnu2h")
 position = Vector2(0, 609)
 collision_layer = 0
 collision_mask = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="DeathmatchHUD" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/DeathmatchHUD"]
+layout_mode = 0
+offset_left = 81.67
+offset_right = 141.67
+offset_bottom = 23.0
+text = "sfasfasf"
+metadata/_edit_use_anchors_ = true
+
+[node name="IndicatorManager" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_2jpsr")
+indicator_scene = ExtResource("4_upwyv")
