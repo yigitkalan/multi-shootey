@@ -3,7 +3,7 @@ extends Control
 
 var visible_rect: Rect2
 var local_player: Node
-var player_container: Node
+@export var player_container: Node
 
 @export var indicator_scene: PackedScene
 
@@ -11,6 +11,12 @@ var player_container: Node
 var active_indicators: Dictionary = {} # { player_id: Sprite2D }
 
 func _ready() -> void:
+	GameManager.state_changed.connect(_on_state_changed)
+
+func _on_state_changed(state: int) -> void:
+	if state == Globals.GameState.POST_ROUND:
+		hide()
+func _process(_delta: float) -> void:
 	if not player_container:
 		push_error("Player container not found")
 		return
@@ -21,11 +27,6 @@ func _ready() -> void:
 			if is_instance_valid(player) and player.player_id == Lobby.get_local_peer_id():
 				local_player = player
 				break
-
-
-func _process(_delta: float) -> void:
-	if not is_instance_valid(local_player):
-		return
 	
 	_set_visible_rect()
 	_update_all_indicators()

@@ -3,7 +3,6 @@ extends Node2D
 const PLAYER_SCENE := preload("uid://b2xyd22qyvitu")
 @onready var spawn_points: Array = $SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
-@onready var indicator_manager: IndicatorManager = $CanvasLayer/IndicatorManager
 @export var max_rounds: int = 3
 @onready var players: Node = $Players
 
@@ -30,8 +29,6 @@ func _ready() -> void:
 	# Connect signals
 	Lobby.player_joined.connect(_on_lobby_player_joined)
 	Lobby.player_left.connect(_on_lobby_player_left)
-
-	indicator_manager.player_container = players
 	
 	if Lobby.is_host():
 		spawn_existing_players()

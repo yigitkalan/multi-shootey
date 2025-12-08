@@ -170,7 +170,7 @@ offset_bottom = 23.0
 text = "sfasfasf"
 metadata/_edit_use_anchors_ = true
 
-[node name="IndicatorManager" type="Control" parent="CanvasLayer"]
+[node name="IndicatorManager" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("player_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -178,4 +178,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_2jpsr")
+player_container = NodePath("../../Players")
 indicator_scene = ExtResource("4_upwyv")
