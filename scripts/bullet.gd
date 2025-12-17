@@ -8,6 +8,7 @@ extends RigidBody2D
 @onready var bullet_collider: CollisionShape2D = $BulletCollider
 
 @export var multiplier: float
+@export_flags_2d_physics var wall_layer_mask: int = 1
 
 func _ready() -> void:
 	gravity_scale = 0.0
@@ -47,6 +48,11 @@ func _destroy_bullet_with_target(target: Node):
 	for player in _get_area_bodies(explosion_area):
 		if applied_player_ids.has(player.player_id):
 			continue
+			
+		# Check if a wall is blocking the view
+		if not _can_see_target(player):
+			continue
+			
 		applied_player_ids.append(player.player_id)
 		player.player_health.take_damage(bullet_stat.explosion_damage)
 		player.apply_knockback(_calculate_hitback_force(player))
@@ -78,6 +84,23 @@ func _get_area_bodies(area: Area2D) -> Array[DeathmatchPlayer]:
 	
 func _calculate_hitback_force(target: Node2D):
 	return (target.global_position - global_position).normalized() * bullet_stat.explosion_force * multiplier
+
+func _can_see_target(target: Node2D) -> bool:
+	# Get the physics world
+	var space_state = get_world_2d().direct_space_state
+	
+	# Set up ray parameters
+	var query = PhysicsRayQueryParameters2D.new()
+	query.from = global_position
+	query.to = target.global_position
+	query.collision_mask = wall_layer_mask
+	query.exclude = [self]
+	
+	# Cast the ray
+	var result = space_state.intersect_ray(query)
+	
+	# If nothing hit = can see target
+	return result.is_empty()
 
 @rpc("any_peer", "call_local", "reliable")
 func _destroy_rpc():

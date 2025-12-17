@@ -49,6 +49,7 @@ contact_monitor = true
 max_contacts_reported = 1
 script = ExtResource("1_mkf8s")
 bullet_stat = SubResource("Resource_l5glv")
+wall_layer_mask = 4
 
 [node name="BulletCollider" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_mkf8s")
