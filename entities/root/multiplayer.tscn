@@ -1,0 +1,35 @@
+[gd_scene load_steps=8 format=3 uid="uid://1ynfwg643qe0"]
+
+[ext_resource type="PackedScene" uid="uid://dpk1u0ir03fuj" path="res://utilities/menus/main_menu.tscn" id="1_h7bwd"]
+[ext_resource type="PackedScene" uid="uid://sgfr4hbfxsc7" path="res://utilities/menus/persistent_hud.tscn" id="2_arxap"]
+[ext_resource type="PackedScene" uid="uid://cbonn4i67ewpl" path="res://utilities/menus/lobby_menu.tscn" id="3_7pw51"]
+[ext_resource type="PackedScene" uid="uid://dt74lcqi4pasu" path="res://utilities/menus/pause_menu.tscn" id="4_dk5ln"]
+[ext_resource type="PackedScene" uid="uid://durdlyilqnadx" path="res://utilities/menus/pre_round_menu.tscn" id="5_276n5"]
+[ext_resource type="PackedScene" uid="uid://bj7xes3hysffj" path="res://utilities/menus/post_round_menu.tscn" id="6_tnrxv"]
+[ext_resource type="PackedScene" uid="uid://ew3aj6tum3yo" path="res://utilities/menus/player_score.tscn" id="7_hxf7f"]
+
+[node name="Multiplayer" type="Node"]
+
+[node name="SceneContainer" type="Node" parent="."]
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" parent="UILayer" instance=ExtResource("1_h7bwd")]
+z_index = 1
+
+[node name="PersistentHUD" parent="UILayer" instance=ExtResource("2_arxap")]
+
+[node name="LobbyMenu" parent="UILayer" instance=ExtResource("3_7pw51")]
+
+[node name="PauseMenu" parent="UILayer" instance=ExtResource("4_dk5ln")]
+
+[node name="PreRoundMenu" parent="UILayer" instance=ExtResource("5_276n5")]
+menu_name = 3
+
+[node name="PostRoundMenu" parent="UILayer" instance=ExtResource("6_tnrxv")]
+player_score_scene = ExtResource("7_hxf7f")
+menu_name = 4
+
+[node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://d0wig0rls33eu")
+spawn_path = NodePath("../SceneContainer")

@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://sgfr4hbfxsc7"]
+
+[ext_resource type="Script" uid="uid://coykuweg18tue" path="res://utilities/menus/persistent_hud.gd" id="1_h00vl"]
+
+[node name="PersistentHUD" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_h00vl")
+
+[node name="ConnectionStatus" type="Label" parent="."]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 41.0
+offset_right = 93.0
+offset_bottom = 64.0
+
+[node name="NotificationPanel" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 1046.0
+offset_top = 31.0
+offset_right = 1086.0
+offset_bottom = 71.0

@@ -1,0 +1,115 @@
+[gd_scene load_steps=18 format=3 uid="uid://b2xyd22qyvitu"]
+
+[ext_resource type="Script" uid="uid://dt3nhsns6lfti" path="res://entities/deatchmatch/player/dm_player.gd" id="1_pmeye"]
+[ext_resource type="Script" uid="uid://duqnljlxs85" path="res://entities/deatchmatch/player/dm_player_stat.gd" id="2_a8sji"]
+[ext_resource type="PackedScene" uid="uid://c883a82fu2pfm" path="res://entities/deatchmatch/shooter/dm_shooter.tscn" id="3_sdit3"]
+[ext_resource type="Script" uid="uid://drq2bphy4y2ku" path="res://entities/deatchmatch/player/dm_player_input.gd" id="4_riewi"]
+[ext_resource type="Script" uid="uid://cbwxn08wwgip3" path="res://entities/deatchmatch/player/dm_player_health.gd" id="5_dqai5"]
+[ext_resource type="Script" uid="uid://ds1v72aqd1ena" path="res://entities/deatchmatch/player/dm_health_stat.gd" id="6_yg6fj"]
+[ext_resource type="Script" uid="uid://b85e76xkujo2a" path="res://entities/deatchmatch/player/dm_health_bar.gd" id="7_hyfhd"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_smehm"]
+friction = 0.0
+
+[sub_resource type="Resource" id="Resource_fjrip"]
+script = ExtResource("2_a8sji")
+movement_force = 10
+stop_force = 10
+max_velocity = 300
+air_movement_coefficient = 0.2
+jump_force = 300
+metadata/_custom_type_script = "uid://duqnljlxs85"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qhqgy"]
+size = Vector2(16, 16)
+
+[sub_resource type="Gradient" id="Gradient_rd3vj"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.33427757, 0.40897298, 0.759999, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2q6dc"]
+gradient = SubResource("Gradient_rd3vj")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_w8hlr"]
+properties/0/path = NodePath(".:direction")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[sub_resource type="Resource" id="Resource_tuyoq"]
+script = ExtResource("6_yg6fj")
+max_health = 4
+metadata/_custom_type_script = "uid://ds1v72aqd1ena"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_smehm"]
+bg_color = Color(0.37409055, 0, 0.13411218, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fjrip"]
+bg_color = Color(0, 0.7134115, 0.4364251, 1)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pmeye"]
+properties/0/path = NodePath(".:player_id")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:position")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("PlayerHealth:current_health")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("HealthBar:value")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
+[node name="DeathmatchPlayer" type="RigidBody2D"]
+collision_layer = 2
+collision_mask = 13
+mass = 0.5
+physics_material_override = SubResource("PhysicsMaterial_smehm")
+continuous_cd = 1
+script = ExtResource("1_pmeye")
+player_stat = SubResource("Resource_fjrip")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_qhqgy")
+
+[node name="BulletSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://ssa5260nc2ff")
+spawn_path = NodePath(".")
+
+[node name="Shooter" parent="." node_paths=PackedStringArray("collision_exception") instance=ExtResource("3_sdit3")]
+collision_exception = NodePath("..")
+
+[node name="PlayerSprite" type="Sprite2D" parent="."]
+z_index = 1
+scale = Vector2(0.07436019, -17.93674)
+texture = SubResource("GradientTexture1D_2q6dc")
+
+[node name="PlayerInput" type="Node2D" parent="."]
+script = ExtResource("4_riewi")
+
+[node name="InputSynchronizer" type="MultiplayerSynchronizer" parent="PlayerInput"]
+replication_config = SubResource("SceneReplicationConfig_w8hlr")
+
+[node name="PlayerHealth" type="Node2D" parent="."]
+script = ExtResource("5_dqai5")
+health_stat = SubResource("Resource_tuyoq")
+
+[node name="GroundCheck" type="RayCast2D" parent="."]
+target_position = Vector2(0, 20)
+collision_mask = 4
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -10.0
+offset_top = -16.0
+offset_right = 9.0
+offset_bottom = -11.0
+theme_override_styles/background = SubResource("StyleBoxFlat_smehm")
+theme_override_styles/fill = SubResource("StyleBoxFlat_fjrip")
+value = 100.0
+show_percentage = false
+script = ExtResource("7_hyfhd")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_pmeye")

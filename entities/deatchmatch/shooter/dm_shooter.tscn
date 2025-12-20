@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://c883a82fu2pfm"]
+
+[ext_resource type="Script" uid="uid://wjqvn3mjonok" path="res://entities/deatchmatch/shooter/dm_shooter.gd" id="1_qp87s"]
+[ext_resource type="Script" uid="uid://c5dl4767j7a2a" path="res://entities/deatchmatch/shooter/dm_shooter_stat.gd" id="2_tggan"]
+
+[sub_resource type="Resource" id="Resource_smehm"]
+script = ExtResource("2_tggan")
+knockback_force = 300
+knockback_duration = 0.15
+cooldown = 1.0
+metadata/_custom_type_script = "uid://c5dl4767j7a2a"
+
+[node name="Shooter" type="Node2D"]
+rotation = 0.011181319
+scale = Vector2(0.99999994, 0.99999994)
+script = ExtResource("1_qp87s")
+shooter_stat = SubResource("Resource_smehm")
+
+[node name="ShootingPoint" type="Marker2D" parent="."]
+position = Vector2(29.998123, -0.3354326)

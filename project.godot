@@ -17,12 +17,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Lobby="*res://scripts/lobby.gd"
-SceneManager="*res://scripts/scene_manager.gd"
-MenuManager="*res://scripts/menu_manager.gd"
-Globals="*res://scripts/globals.gd"
-EventBus="*res://scripts/event_bus.gd"
-GameManager="*res://scripts/game_manager.gd"
+Lobby="*res://common/lobby.gd"
+SceneManager="*res://common/scene_manager.gd"
+MenuManager="*res://common/menu_manager.gd"
+Globals="*res://common/globals.gd"
+EventBus="*res://common/event_bus.gd"
+GameManager="*res://common/game_manager.gd"
 
 [display]
 

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://pk0w7gfw0ab1"]
+
+[ext_resource type="Script" uid="uid://5dlx4afve45b" path="res://utilities/indicator_manager_2d/indicator_manager_2d.gd" id="1_xkdy0"]
+[ext_resource type="PackedScene" uid="uid://gucqnvk78v82" path="res://entities/deatchmatch/player_indicator/dm_player_indicator.tscn" id="2_fvpbk"]
+
+[node name="IndicatorManager2D" type="Control" node_paths=PackedStringArray("player_container")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xkdy0")
+player_container = NodePath("")
+indicator_scene = ExtResource("2_fvpbk")
